@@ -23,4 +23,10 @@ public class MovieController {
         String result = tmdbService.searchMovies(query);
         return ResponseEntity.ok(result);
     }
+
+   @GetMapping("/popular")
+    public ResponseEntity<?> getPopularMovies() {
+        String result = tmdbService.getPopularMovies();
+        return ResponseEntity.ok(result);
+    }
 }

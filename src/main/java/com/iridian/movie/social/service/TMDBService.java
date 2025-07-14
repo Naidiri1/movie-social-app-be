@@ -30,4 +30,12 @@ public class TMDBService {
                 .bodyToMono(String.class)
                 .block(); 
     }
+
+    public String getPopularMovies() {
+    return webClient.get()
+            .uri("/movie/popular")
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+    }
 }
