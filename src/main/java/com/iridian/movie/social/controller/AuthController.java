@@ -25,8 +25,8 @@ public class AuthController {
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         // Basic hardcoded validation (replace with real auth later)
         if ("admin".equals(request.getUsername()) && "password".equals(request.getPassword())) {
-            String token = jwtUtil.generateToken(request.getUsername());
-            return ResponseEntity.ok(Collections.singletonMap("token", token));
+            String access_token = jwtUtil.generateToken(request.getUsername());
+            return ResponseEntity.ok(Collections.singletonMap("access_token", access_token));
         } else {
             return ResponseEntity.status(401).body(Collections.singletonMap("error", "Invalid credentials"));
         }
