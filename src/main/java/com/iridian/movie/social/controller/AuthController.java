@@ -28,7 +28,7 @@ public class AuthController {
         User user = new User();
         user.setUsername(request.getUsername());
         user.setEmail(request.getEmail());
-        user.setPassword(request.getPassword());
+        user.setPasswordHash(request.getPassword());
 
         String token = authService.signup(user);
         return ResponseEntity.ok(Collections.singletonMap("access_token", token));

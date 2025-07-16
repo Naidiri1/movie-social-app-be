@@ -1,10 +1,11 @@
 package com.iridian.movie.social.service;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Service;
+
 import com.iridian.movie.social.model.User;
 import com.iridian.movie.social.repository.UserRepository;
 import com.iridian.movie.social.util.JwtUtil;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Service;
 
 @Service
 public class AuthService {
@@ -18,8 +19,9 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-    public String signup(User user) {
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+   public String signup(User user) {
+        String hashedPassword = passwordEncoder.encode(user.getPasswordHash());
+        user.setPasswordHash(hashedPassword);
         User savedUser = userRepository.save(user);
         return jwtUtil.generateToken(savedUser.getUserId(), savedUser.getUsername());
     }
@@ -28,10 +30,11 @@ public class AuthService {
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        if (!passwordEncoder.matches(rawPassword, user.getPassword())) {
+        if (!passwordEncoder.matches(rawPassword, user.getPasswordHash())) {
             throw new RuntimeException("Invalid password");
         }
 
         return jwtUtil.generateToken(user.getUserId(), user.getUsername());
     }
 }
+
