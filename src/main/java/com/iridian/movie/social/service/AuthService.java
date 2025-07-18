@@ -19,6 +19,11 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
+   public User findByUsername(String username) {
+    return userRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+   }
+
    public String signup(User user) {
         String hashedPassword = passwordEncoder.encode(user.getPasswordHash());
         user.setPasswordHash(hashedPassword);
