@@ -24,11 +24,10 @@ public class AuthService {
             .orElseThrow(() -> new RuntimeException("User not found"));
    }
 
-   public String signup(User user) {
+   public User signup(User user) {
         String hashedPassword = passwordEncoder.encode(user.getPasswordHash());
         user.setPasswordHash(hashedPassword);
-        User savedUser = userRepository.save(user);
-        return jwtUtil.generateToken(savedUser.getUserId(), savedUser.getUsername());
+        return userRepository.save(user);
     }
 
     public String login(String username, String rawPassword) {

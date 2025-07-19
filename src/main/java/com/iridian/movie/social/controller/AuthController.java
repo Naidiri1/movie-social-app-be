@@ -33,17 +33,23 @@ public class AuthController {
           this.jwtUtil = jwtUtil;
     }
 
-    @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
-        User user = new User();
-        user.setUsername(request.getUsername());
-        user.setEmail(request.getEmail());
-        user.setPasswordHash(request.getPassword());
+   @PostMapping("/signup")
+public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
+    User user = new User();
+    user.setUsername(request.getUsername());
+    user.setEmail(request.getEmail());
+    user.setPasswordHash(request.getPassword());
 
-        String token = authService.signup(user);
-        return ResponseEntity.ok(Collections.singletonMap("access_token", token));
-    }
+    User savedUser = authService.signup(user);
+    String token = jwtUtil.generateToken(savedUser.getUserId(), savedUser.getUsername());
 
+    Map<String, Object> response = new HashMap<>();
+    response.put("access_token", token);
+    response.put("username", savedUser.getUsername());
+    response.put("email", savedUser.getEmail());
+
+    return ResponseEntity.ok(response);
+}
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         String token = authService.login(request.getUsername(), request.getPassword());
