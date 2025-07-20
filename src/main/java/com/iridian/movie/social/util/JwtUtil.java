@@ -18,7 +18,7 @@ public class JwtUtil {
     @Value("${jwt.secret}")
     private String secret;
 
-    public String generateToken(Long userId, String username) {
+    public String generateToken(String userId, String username) {
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
 
         return Jwts.builder()

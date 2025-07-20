@@ -19,23 +19,24 @@ import com.iridian.movie.social.dto.SignupRequest;
 import com.iridian.movie.social.model.User;
 import com.iridian.movie.social.service.AuthService;
 import com.iridian.movie.social.util.JwtUtil;
+import com.iridian.movie.social.util.PrimaryKey;
 import com.iridian.movie.social.util.TokenBlackList;
 
-@RestController
-@RequestMapping("/api/auth")
-public class AuthController {
-
+    @RestController
+    @RequestMapping("/api/auth")
+    public class AuthController {
     private final AuthService authService;
-   private final JwtUtil jwtUtil; 
+    private final JwtUtil jwtUtil; 
 
     public AuthController(AuthService authService,  JwtUtil jwtUtil) {
         this.authService = authService;
-          this.jwtUtil = jwtUtil;
+        this.jwtUtil = jwtUtil;
     }
 
    @PostMapping("/signup")
-public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
+    public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
     User user = new User();
+    user.setUserId(PrimaryKey.get());
     user.setUsername(request.getUsername());
     user.setEmail(request.getEmail());
     user.setPasswordHash(request.getPassword());
@@ -47,15 +48,16 @@ public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
     response.put("access_token", token);
     response.put("username", savedUser.getUsername());
     response.put("email", savedUser.getEmail());
+    response.put("userId", savedUser.getUserId()); 
 
     return ResponseEntity.ok(response);
-}
+   }
+
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
         String token = authService.login(request.getUsername(), request.getPassword());
         return ResponseEntity.ok(Collections.singletonMap("access_token", token));
     }
-
 
     @GetMapping("/userSession")
     public ResponseEntity<?> getUserSession(@RequestHeader("Authorization") String token) {
@@ -69,6 +71,7 @@ public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
             Map<String, String> userInfo = new HashMap<>();
             userInfo.put("username", user.getUsername());
             userInfo.put("email", user.getEmail());
+            userInfo.put("userId", user.getUserId());
 
             return ResponseEntity.ok(userInfo);
         } else {
