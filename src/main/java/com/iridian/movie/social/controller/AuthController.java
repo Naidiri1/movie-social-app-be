@@ -37,7 +37,7 @@ import com.iridian.movie.social.util.TokenBlackList;
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
     User user = new User();
     user.setUserId(PrimaryKey.get());
-    user.setUsername(request.getUsername());
+    user.setUsername(request.getUsername().toLowerCase());
     user.setEmail(request.getEmail());
     user.setPasswordHash(request.getPassword());
 

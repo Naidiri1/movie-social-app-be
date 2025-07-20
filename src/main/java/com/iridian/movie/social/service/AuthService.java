@@ -31,9 +31,9 @@ public class AuthService {
     }
 
     public String login(String username, String rawPassword) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+         String normalizedUsername = username.toLowerCase();
+         User user = userRepository.findByUsername(normalizedUsername)
+            .orElseThrow(() -> new RuntimeException("User not found"));
         if (!passwordEncoder.matches(rawPassword, user.getPasswordHash())) {
             throw new RuntimeException("Invalid password");
         }
