@@ -1,5 +1,7 @@
 package com.iridian.movie.social.service;
 
+import java.time.LocalDate;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -38,4 +40,26 @@ public class TMDBService {
             .bodyToMono(String.class)
             .block();
     }
+
+   public String getUpcomingMovies() {
+    LocalDate startDate = LocalDate.of(2025, 7, 23);
+    LocalDate endDate = startDate.plusMonths(1).withDayOfMonth(startDate.plusMonths(1).lengthOfMonth());
+
+    return webClient.get()
+            .uri(uriBuilder -> uriBuilder
+                      .path("/discover/movie")
+                    .queryParam("include_adult", "false")
+                    .queryParam("include_video", "false")
+                    .queryParam("language", "en-US")
+                    .queryParam("page", "1")
+                    .queryParam("sort_by", "popularity.desc")
+                    .queryParam("with_release_type", "2|3") 
+                    .queryParam("primary_release_date.gte", startDate.toString())
+                    .queryParam("primary_release_date.lte", endDate.toString())
+                    .build()
+            )
+            .retrieve()
+            .bodyToMono(String.class)
+            .block();
+   }
 }

@@ -29,4 +29,11 @@ public class MovieController {
         String result = tmdbService.getPopularMovies();
         return ResponseEntity.ok(result);
     }
+
+    
+   @GetMapping("/upcoming")
+    public ResponseEntity<?> getUpcomingMovies() {
+        String result = tmdbService.getUpcomingMovies();
+        return ResponseEntity.ok(result);
+    }
 }
