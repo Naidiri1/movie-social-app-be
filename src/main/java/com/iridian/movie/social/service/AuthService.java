@@ -19,17 +19,21 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-   public String signup(User user) {
+   public User findByUsername(String username) {
+    return userRepository.findByUsername(username)
+            .orElseThrow(() -> new RuntimeException("User not found"));
+   }
+
+   public User signup(User user) {
         String hashedPassword = passwordEncoder.encode(user.getPasswordHash());
         user.setPasswordHash(hashedPassword);
-        User savedUser = userRepository.save(user);
-        return jwtUtil.generateToken(savedUser.getUserId(), savedUser.getUsername());
+        return userRepository.save(user);
     }
 
     public String login(String username, String rawPassword) {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
+         String normalizedUsername = username.toLowerCase();
+         User user = userRepository.findByUsername(normalizedUsername)
+            .orElseThrow(() -> new RuntimeException("User not found"));
         if (!passwordEncoder.matches(rawPassword, user.getPasswordHash())) {
             throw new RuntimeException("Invalid password");
         }
