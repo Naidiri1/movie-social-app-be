@@ -22,11 +22,11 @@ public class TMDBService {
                 .build();
     }
 
-    public String searchMovies(String query) {
+    public String searchMovies(String id) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                         .path("/search/movie")
-                        .queryParam("query", query)
+                        .queryParam("query", id)
                         .build())
                 .retrieve()
                 .bodyToMono(String.class)
@@ -62,4 +62,16 @@ public class TMDBService {
             .bodyToMono(String.class)
             .block();
    }
+
+    public String getMovieDetails(Number id) {
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                        .path("/movie/{movie_id}")
+                        .queryParam("id", id)
+                        .build(id))
+                .retrieve()
+                .bodyToMono(String.class)
+                .block(); 
+    }
+
 }

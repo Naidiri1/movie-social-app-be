@@ -36,4 +36,10 @@ public class MovieController {
         String result = tmdbService.getUpcomingMovies();
         return ResponseEntity.ok(result);
     }
+
+   @GetMapping("/movieDetails")
+    public ResponseEntity<?> getMovieDetails(@RequestParam Number id) {
+    String result = tmdbService.getMovieDetails(id);
+    return ResponseEntity.ok(result);
+}
 }
