@@ -33,7 +33,7 @@ public class FavoriteController {
     }
 
     @GetMapping
-    public ResponseEntity<List<FavoriteFlat>> getFavorites(@RequestParam("userId") String userId) {
+    public ResponseEntity<List<FavoriteFlat>> getFavorites(@RequestParam String userId) {
         List<Favorites> favorites = favoriteRepository.findByUser_UserId(userId);
         List<FavoriteFlat> dtos = favorites.stream()
                 .map(this::convertToFlatDTO)
@@ -54,7 +54,29 @@ public class FavoriteController {
             f.getCommentEnabled(),
             f.getReleasedDate(),
             f.getMovieDescription(),
+            f.getPublicScore(),
             f.getCreatedAt()
+
         );
     }
+
+    @PutMapping("/{favoriteId}")
+    public ResponseEntity<FavoriteFlat> updateFavorite(@PathVariable Long favoriteId,
+                                                   @RequestBody Favorites updatedFavorite,
+                                                   @RequestParam String userId) {
+    Favorites existing = favoriteRepository.findById(favoriteId)
+            .orElseThrow(() -> new RuntimeException("Favorite not found"));
+
+    if (!existing.getUser().getUserId().equals(userId)) {
+        return ResponseEntity.status(403).build(); 
+    }
+
+    existing.setComment(updatedFavorite.getComment());
+    existing.setUserScore(updatedFavorite.getUserScore());
+    existing.setCommentEnabled(updatedFavorite.getCommentEnabled());
+
+    Favorites saved = favoriteRepository.save(existing);
+    return ResponseEntity.ok(convertToFlatDTO(saved));
+}
+
 }

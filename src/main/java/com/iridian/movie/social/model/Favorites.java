@@ -29,7 +29,7 @@ public class Favorites implements Serializable {
     private String comment;
 
     @Column(name = "user_score")
-    private Integer userScore;
+    private Double userScore;
 
      @Column(name = "comment_enabled")
     private Boolean commentEnabled;
@@ -40,6 +40,9 @@ public class Favorites implements Serializable {
 
     @Column(name = "movie_description", length = 1000)
     private String movieDescription;
+
+    @Column(name = "public_score")
+    private Double publicScore;
 
 
     @Column(name = "created_at", nullable = false, updatable = false)
@@ -93,16 +96,24 @@ public class Favorites implements Serializable {
         this.comment = comment;
     }
 
-    public Integer getUserScore() {
+    public Double getUserScore() {
         return userScore;
     }
 
-     public void setUserScore(Integer userScore) {
+     public void setUserScore(Double userScore) {
         this.userScore = userScore;
     }
 
     public Boolean getCommentEnabled() {
     return commentEnabled;
+    }
+
+     public Double getPublicScore() {
+        return publicScore;
+    }
+
+     public void setPublicScore(Double publicScore) {
+        this.publicScore = publicScore;
     }
 
     public void setCommentEnabled(Boolean commentEnabled) {

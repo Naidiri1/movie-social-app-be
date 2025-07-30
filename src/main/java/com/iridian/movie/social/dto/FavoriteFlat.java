@@ -11,16 +11,17 @@ public class FavoriteFlat {
     private String title;
     private String posterPath;
     private String comment;
-    private Integer userScore;
+    private Double userScore;
     private Boolean commentEnabled;
     private String releasedDate;
     private String movieDescription;
+    private Double publicScore;
     private LocalDateTime createdAt;
 
     public FavoriteFlat(Long id, String userId, String username,
                             Long movieId, String title, String posterPath, String comment,
-                            Integer userScore, Boolean commentEnabled, String releasedDate,
-                            String movieDescription, LocalDateTime createdAt) {
+                            Double userScore, Boolean commentEnabled, String releasedDate,
+                            String movieDescription, Double publicScore, LocalDateTime createdAt) {
         this.id = id;
         this.userId = userId;
         this.username = username;
@@ -32,6 +33,7 @@ public class FavoriteFlat {
         this.commentEnabled = commentEnabled;
         this.releasedDate = releasedDate;
         this.movieDescription = movieDescription;
+        this.publicScore = publicScore;
         this.createdAt = createdAt;
     }
 
@@ -93,12 +95,20 @@ public class FavoriteFlat {
         this.comment = comment;
     }
 
-    public Integer getUserScore() {
+    public Double getUserScore() {
         return userScore;
     }
 
-    public void setUserScore(Integer userScore) {
+    public void setUserScore(Double userScore) {
         this.userScore = userScore;
+    }
+
+     public Double getPublicScore() {
+        return publicScore;
+    }
+
+    public void setPublicScore(Double publicScore) {
+        this.publicScore = publicScore;
     }
 
     public Boolean getCommentEnabled() {
