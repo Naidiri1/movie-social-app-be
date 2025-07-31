@@ -25,7 +25,7 @@ public class FavoriteController {
 
     @PostMapping
     public ResponseEntity<FavoriteFlat> addFavorite(@RequestBody Favorites favorite,
-                                                        @RequestParam String userId) {
+            @RequestParam String userId) {
         User user = userRepository.findById(userId).orElseThrow();
         favorite.setUser(user);
         Favorites saved = favoriteRepository.save(favorite);
@@ -43,40 +43,53 @@ public class FavoriteController {
 
     private FavoriteFlat convertToFlatDTO(Favorites f) {
         return new FavoriteFlat(
-            f.getId(),
-            f.getUser().getUserId(),
-            f.getUser().getUsername(),
-            f.getMovieId(),
-            f.getTitle(),
-            f.getPosterPath(),
-            f.getComment(),
-            f.getUserScore(),
-            f.getCommentEnabled(),
-            f.getReleasedDate(),
-            f.getMovieDescription(),
-            f.getPublicScore(),
-            f.getCreatedAt()
+                f.getId(),
+                f.getUser().getUserId(),
+                f.getUser().getUsername(),
+                f.getMovieId(),
+                f.getTitle(),
+                f.getPosterPath(),
+                f.getComment(),
+                f.getUserScore(),
+                f.getCommentEnabled(),
+                f.getReleasedDate(),
+                f.getMovieDescription(),
+                f.getPublicScore(),
+                f.getCreatedAt()
 
         );
     }
 
     @PutMapping("/{favoriteId}")
     public ResponseEntity<FavoriteFlat> updateFavorite(@PathVariable Long favoriteId,
-                                                   @RequestBody Favorites updatedFavorite,
-                                                   @RequestParam String userId) {
-    Favorites existing = favoriteRepository.findById(favoriteId)
-            .orElseThrow(() -> new RuntimeException("Favorite not found"));
+            @RequestBody Favorites updatedFavorite,
+            @RequestParam String userId) {
+        Favorites existing = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new RuntimeException("Favorite not found"));
 
-    if (!existing.getUser().getUserId().equals(userId)) {
-        return ResponseEntity.status(403).build(); 
+        if (!existing.getUser().getUserId().equals(userId)) {
+            return ResponseEntity.status(403).build();
+        }
+
+        existing.setComment(updatedFavorite.getComment());
+        existing.setUserScore(updatedFavorite.getUserScore());
+        existing.setCommentEnabled(updatedFavorite.getCommentEnabled());
+
+        Favorites saved = favoriteRepository.save(existing);
+        return ResponseEntity.ok(convertToFlatDTO(saved));
     }
 
-    existing.setComment(updatedFavorite.getComment());
-    existing.setUserScore(updatedFavorite.getUserScore());
-    existing.setCommentEnabled(updatedFavorite.getCommentEnabled());
+    @DeleteMapping("/{favoriteId}")
+    public ResponseEntity<FavoriteFlat> deleteMovieFav(@PathVariable Long favoriteId,
+            @RequestParam String userId) {
+        Favorites existing = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new RuntimeException("Favorite not found"));
 
-    Favorites saved = favoriteRepository.save(existing);
-    return ResponseEntity.ok(convertToFlatDTO(saved));
-}
+        if (!existing.getUser().getUserId().equals(userId)) {
+            return ResponseEntity.status(403).build();
+        }
 
+        favoriteRepository.delete(existing);
+        return ResponseEntity.noContent().build();
+    }
 }
