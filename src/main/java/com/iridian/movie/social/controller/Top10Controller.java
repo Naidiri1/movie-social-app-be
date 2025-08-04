@@ -53,10 +53,10 @@ public class Top10Controller {
                 f.getUserScore(),
                 f.getCommentEnabled(),
                 f.getReleasedDate(),
+                f.getRank(),
                 f.getMovieDescription(),
                 f.getPublicScore(),
                 f.getCreatedAt()
-
         );
     }
 

@@ -44,6 +44,8 @@ public class Top10 implements Serializable {
     @Column(name = "public_score")
     private Double publicScore;
 
+     @Column(name = "rank")
+    private Integer rank;
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
@@ -133,6 +135,13 @@ public class Top10 implements Serializable {
         return movieDescription;
     }
 
+    public void setRank(Integer rank) {
+        this.rank = rank;
+    }
+
+    public Integer getRank() {
+        return rank;
+    }
      public void setMovieDescription(String movieDescription) {
         this.movieDescription = movieDescription;
     }

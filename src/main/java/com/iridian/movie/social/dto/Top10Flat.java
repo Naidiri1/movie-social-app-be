@@ -16,11 +16,13 @@ public class Top10Flat {
     private String releasedDate;
     private String movieDescription;
     private Double publicScore;
+    private Integer rank;
+
     private LocalDateTime createdAt;
 
     public Top10Flat(Long id, String userId, String username,
                             Long movieId, String title, String posterPath, String comment,
-                            Double userScore, Boolean commentEnabled, String releasedDate,
+                            Double userScore, Boolean commentEnabled, String releasedDate, Integer rank,
                             String movieDescription, Double publicScore, LocalDateTime createdAt) {
         this.id = id;
         this.userId = userId;
@@ -32,6 +34,7 @@ public class Top10Flat {
         this.userScore = userScore;
         this.commentEnabled = commentEnabled;
         this.releasedDate = releasedDate;
+        this.rank = rank;
         this.movieDescription = movieDescription;
         this.publicScore = publicScore;
         this.createdAt = createdAt;
@@ -127,10 +130,19 @@ public class Top10Flat {
         this.releasedDate = releasedDate;
     }
 
+     public Integer getRank() {
+        return rank;
+    }
+    
+    public void setRank(Integer rank) {
+        this.rank = rank;
+    }
+
     public String getMovieDescription() {
         return movieDescription;
     }
 
+    
     public void setMovieDescription(String movieDescription) {
         this.movieDescription = movieDescription;
     }
