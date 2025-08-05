@@ -11,5 +11,9 @@ import com.iridian.movie.social.model.Top10;
 @Repository
 public interface Top10Repository extends JpaRepository<Top10, Long> {
     List<Top10> findByUser_UserId(String userId);
+
     Optional<Top10> findByUser_UserIdAndMovieId(String userId, Long movieId);
+
+    List<Top10> findByUser_UserIdOrderByRankAsc(String userId);
+
 }
