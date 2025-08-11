@@ -42,7 +42,7 @@ public class TMDBService {
     }
 
    public String getUpcomingMovies() {
-    LocalDate startDate = LocalDate.of(2025, 7, 23);
+    LocalDate startDate = LocalDate.of(2025, 8, 11);
     LocalDate endDate = startDate.plusMonths(1).withDayOfMonth(startDate.plusMonths(1).lengthOfMonth());
 
     return webClient.get()
