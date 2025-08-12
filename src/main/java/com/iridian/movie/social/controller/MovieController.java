@@ -24,22 +24,47 @@ public class MovieController {
         return ResponseEntity.ok(result);
     }
 
-   @GetMapping("/popular")
-    public ResponseEntity<?> getPopularMovies() {
-        String result = tmdbService.getPopularMovies();
+    @GetMapping("/popular")
+    public ResponseEntity<?> getPopularMovies(
+            @RequestParam(required = false) Integer with_genres,
+            @RequestParam(required = false, defaultValue = "1") Integer page) {
+        
+        String result;
+        
+        if (with_genres != null) {
+            result = tmdbService.getMoviesByGenre(with_genres, page);
+        } else {
+            result = tmdbService.getPopularMovies(page);
+        }
+        
         return ResponseEntity.ok(result);
     }
 
-    
-   @GetMapping("/upcoming")
-    public ResponseEntity<?> getUpcomingMovies() {
-        String result = tmdbService.getUpcomingMovies();
+    @GetMapping("/upcoming")
+    public ResponseEntity<?> getUpcomingMovies(
+            @RequestParam(required = false) Integer with_genres,
+            @RequestParam(required = false, defaultValue = "1") Integer page) {
+        
+        String result;
+        
+        if (with_genres != null) {
+            result = tmdbService.getUpcomingMoviesByGenre(with_genres, page);
+        } else {
+            result = tmdbService.getUpcomingMovies(page);
+        }
+        
         return ResponseEntity.ok(result);
     }
 
-   @GetMapping("/movieDetails")
+    @GetMapping("/movieDetails")
     public ResponseEntity<?> getMovieDetails(@RequestParam Number id) {
-    String result = tmdbService.getMovieDetails(id);
-    return ResponseEntity.ok(result);
-}
+        String result = tmdbService.getMovieDetails(id);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/genres")
+    public ResponseEntity<?> getGenres() {
+        String result = tmdbService.getGenres();
+        return ResponseEntity.ok(result);
+    }
 }

@@ -1,8 +1,13 @@
 package com.iridian.movie.social.dto;
 
 import java.time.LocalDateTime;
+import java.util.List;
+
+import com.iridian.movie.social.model.Favorites;
+import com.iridian.movie.social.util.GenreMap;
 
 public class FavoriteFlat {
+
     private Long id;
     private String userId;
     private String username;
@@ -16,12 +21,13 @@ public class FavoriteFlat {
     private String releasedDate;
     private String movieDescription;
     private Double publicScore;
+    private List<String> genres;
     private LocalDateTime createdAt;
 
     public FavoriteFlat(Long id, String userId, String username,
-                            Long movieId, String title, String posterPath, String comment,
-                            Double userScore, Boolean commentEnabled, String releasedDate,
-                            String movieDescription, Double publicScore, LocalDateTime createdAt) {
+            Long movieId, String title, String posterPath, String comment,
+            Double userScore, Boolean commentEnabled, String releasedDate,
+            String movieDescription, Double publicScore, List<String> genres, LocalDateTime createdAt) {
         this.id = id;
         this.userId = userId;
         this.username = username;
@@ -34,9 +40,17 @@ public class FavoriteFlat {
         this.releasedDate = releasedDate;
         this.movieDescription = movieDescription;
         this.publicScore = publicScore;
+        this.genres = genres;
         this.createdAt = createdAt;
     }
 
+    public static FavoriteFlat createWithGenres(Favorites entity) {
+        FavoriteFlat dto = new FavoriteFlat();
+        dto.setGenres(GenreMap.toNames(entity.getGenreIds()));
+        return dto;
+    }
+
+    public FavoriteFlat() {}
 
     public Long getId() {
         return id;
@@ -103,7 +117,7 @@ public class FavoriteFlat {
         this.userScore = userScore;
     }
 
-     public Double getPublicScore() {
+    public Double getPublicScore() {
         return publicScore;
     }
 
@@ -133,6 +147,14 @@ public class FavoriteFlat {
 
     public void setMovieDescription(String movieDescription) {
         this.movieDescription = movieDescription;
+    }
+
+    public List<String> getGenres() {
+        return genres;
+    }
+
+    public void setGenres(List<String> genres) {
+        this.genres = genres;
     }
 
     public LocalDateTime getCreatedAt() {
