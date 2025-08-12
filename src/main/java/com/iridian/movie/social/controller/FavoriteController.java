@@ -1,15 +1,25 @@
 package com.iridian.movie.social.controller;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
 import com.iridian.movie.social.dto.FavoriteFlat;
 import com.iridian.movie.social.model.Favorites;
 import com.iridian.movie.social.model.User;
 import com.iridian.movie.social.repository.FavoriteRepository;
 import com.iridian.movie.social.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
-import java.util.stream.Collectors;
+import com.iridian.movie.social.util.GenreMap;
 
 @RestController
 @RequestMapping("/api/favorites")
@@ -55,8 +65,8 @@ public class FavoriteController {
                 f.getReleasedDate(),
                 f.getMovieDescription(),
                 f.getPublicScore(),
+                GenreMap.toNames(f.getGenreIds()), // Convert genre IDs to names
                 f.getCreatedAt()
-
         );
     }
 

@@ -3,6 +3,7 @@ package com.iridian.movie.social.service;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.TemporalAdjusters;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -34,12 +35,21 @@ public class TMDBService {
                 .block();
     }
 
-    public String getPopularMovies() {
+    // Updated getPopularMovies with pagination support
+    public String getPopularMovies(Integer page) {
         return webClient.get()
-                .uri("/movie/popular")
+                .uri(uriBuilder -> uriBuilder
+                .path("/movie/popular")
+                .queryParam("page", page != null ? page : 1)
+                .build())
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
+    }
+
+    // Overloaded method for backward compatibility
+    public String getPopularMovies() {
+        return getPopularMovies(1);
     }
 
     public String getUpcomingMovies() {
@@ -77,4 +87,57 @@ public class TMDBService {
                 .block();
     }
 
+    /**
+     * Filter movies by genre IDs using TMDB discover endpoint
+     * @param genreIds List of genre IDs (e.g., [28, 35] for Action and Comedy)
+     * @param page Page number (optional, defaults to 1)
+     * @return JSON response with filtered movies
+     */
+    public String getMoviesByGenres(List<Integer> genreIds, Integer page) {
+        // Convert list of IDs to comma-separated string (e.g., "28,35")
+        String genreIdsStr = genreIds.stream()
+                .map(String::valueOf)
+                .reduce((a, b) -> a + "," + b)
+                .orElse("");
+
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/discover/movie")
+                .queryParam("include_adult", "false")
+                .queryParam("include_video", "false")
+                .queryParam("language", "en-US")
+                .queryParam("page", page != null ? page : 1)
+                .queryParam("sort_by", "popularity.desc")
+                .queryParam("with_genres", genreIdsStr) // Key parameter for genre filtering
+                .build())
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
+    /**
+     * Overloaded method with default page 1
+     */
+    public String getMoviesByGenres(List<Integer> genreIds) {
+        return getMoviesByGenres(genreIds, 1);
+    }
+
+    /**
+     * Filter movies by single genre ID
+     */
+    public String getMoviesByGenre(Integer genreId, Integer page) {
+        return getMoviesByGenres(List.of(genreId), page);
+    }
+
+    /**
+     * Get all available genres from TMDB
+     * @return JSON response with genre list
+     */
+    public String getGenres() {
+        return webClient.get()
+                .uri("/genre/movie/list")
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
 }

@@ -19,6 +19,7 @@ import com.iridian.movie.social.model.User;
 import com.iridian.movie.social.model.WatchLater;
 import com.iridian.movie.social.repository.UserRepository;
 import com.iridian.movie.social.repository.WatchLaterRepository;
+import com.iridian.movie.social.util.GenreMap;
 
 @RestController
 @RequestMapping("/api/watch-later")
@@ -64,8 +65,8 @@ public class WatchLaterController {
                 w.getReleasedDate(),
                 w.getMovieDescription(),
                 w.getPublicScore(),
+                GenreMap.toNames(w.getGenreIds()), // Convert genre IDs to names
                 w.getCreatedAt()
-
         );
     }
 

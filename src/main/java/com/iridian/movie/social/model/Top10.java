@@ -1,7 +1,20 @@
 package com.iridian.movie.social.model;
 
-import jakarta.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "top10")
@@ -33,6 +46,10 @@ public class Top10 implements Serializable {
 
     @Column(name = "comment_enabled")
     private Boolean commentEnabled;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private List<Integer> genreIds = new ArrayList<>();
 
     @Column(name = "releasedDate")
     private String releasedDate;
@@ -119,6 +136,14 @@ public class Top10 implements Serializable {
 
     public void setCommentEnabled(Boolean commentEnabled) {
         this.commentEnabled = commentEnabled;
+    }
+
+    public List<Integer> getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = (genreIds != null) ? genreIds : new ArrayList<>();
     }
 
     public String getReleasedDate() {

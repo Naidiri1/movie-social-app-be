@@ -24,22 +24,39 @@ public class MovieController {
         return ResponseEntity.ok(result);
     }
 
-   @GetMapping("/popular")
-    public ResponseEntity<?> getPopularMovies() {
-        String result = tmdbService.getPopularMovies();
+    @GetMapping("/popular")
+    public ResponseEntity<?> getPopularMovies(
+            @RequestParam(required = false) Integer with_genres,
+            @RequestParam(required = false, defaultValue = "1") Integer page) {
+        
+        String result;
+        
+        if (with_genres != null) {
+            // Use genre filtering - calls /discover/movie with genre filter
+            result = tmdbService.getMoviesByGenre(with_genres, page);
+        } else {
+            // Return regular popular movies with pagination - calls /movie/popular
+            result = tmdbService.getPopularMovies(page);
+        }
+        
         return ResponseEntity.ok(result);
     }
 
-    
-   @GetMapping("/upcoming")
+    @GetMapping("/upcoming")
     public ResponseEntity<?> getUpcomingMovies() {
         String result = tmdbService.getUpcomingMovies();
         return ResponseEntity.ok(result);
     }
 
-   @GetMapping("/movieDetails")
+    @GetMapping("/movieDetails")
     public ResponseEntity<?> getMovieDetails(@RequestParam Number id) {
-    String result = tmdbService.getMovieDetails(id);
-    return ResponseEntity.ok(result);
-}
+        String result = tmdbService.getMovieDetails(id);
+        return ResponseEntity.ok(result);
+    }
+
+    @GetMapping("/genres")
+    public ResponseEntity<?> getGenres() {
+        String result = tmdbService.getGenres();
+        return ResponseEntity.ok(result);
+    }
 }

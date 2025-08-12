@@ -1,17 +1,27 @@
 package com.iridian.movie.social.controller;
 
+import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
+
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.iridian.movie.social.dto.RankUpdate;
 import com.iridian.movie.social.dto.Top10Flat;
 import com.iridian.movie.social.model.Top10;
 import com.iridian.movie.social.model.User;
 import com.iridian.movie.social.repository.Top10Repository;
 import com.iridian.movie.social.repository.UserRepository;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import com.iridian.movie.social.dto.RankUpdate;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.Optional;
+import com.iridian.movie.social.util.GenreMap;
 
 @RestController
 @RequestMapping("/api/top10")
@@ -58,6 +68,7 @@ public class Top10Controller {
                 f.getRank(),
                 f.getMovieDescription(),
                 f.getPublicScore(),
+                GenreMap.toNames(f.getGenreIds()), // Convert genre IDs to names
                 f.getCreatedAt());
     }
 

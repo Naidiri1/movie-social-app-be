@@ -1,6 +1,11 @@
 package com.iridian.movie.social.model;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
+
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -43,6 +48,9 @@ public class WatchLater implements Serializable {
      @Column(name = "comment_enabled")
     private Boolean commentEnabled;
 
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(columnDefinition = "jsonb")
+    private List<Integer> genreIds = new ArrayList<>();
 
      @Column(name = "releasedDate")
     private String releasedDate;
@@ -52,7 +60,6 @@ public class WatchLater implements Serializable {
 
     @Column(name = "public_score")
     private Double publicScore;
-
 
     @Column(name = "created_at", nullable = false, updatable = false)
     private java.time.LocalDateTime createdAt = java.time.LocalDateTime.now();
@@ -128,7 +135,14 @@ public class WatchLater implements Serializable {
     public void setCommentEnabled(Boolean commentEnabled) {
         this.commentEnabled = commentEnabled;
     }
-   
+
+    public List<Integer> getGenreIds() {
+        return genreIds;
+    }
+
+    public void setGenreIds(List<Integer> genreIds) {
+        this.genreIds = (genreIds != null) ? genreIds : new ArrayList<>();
+    }
 
     public String getReleasedDate() {
         return releasedDate;
