@@ -32,10 +32,8 @@ public class MovieController {
         String result;
         
         if (with_genres != null) {
-            // Use genre filtering - calls /discover/movie with genre filter
             result = tmdbService.getMoviesByGenre(with_genres, page);
         } else {
-            // Return regular popular movies with pagination - calls /movie/popular
             result = tmdbService.getPopularMovies(page);
         }
         
@@ -43,8 +41,18 @@ public class MovieController {
     }
 
     @GetMapping("/upcoming")
-    public ResponseEntity<?> getUpcomingMovies() {
-        String result = tmdbService.getUpcomingMovies();
+    public ResponseEntity<?> getUpcomingMovies(
+            @RequestParam(required = false) Integer with_genres,
+            @RequestParam(required = false, defaultValue = "1") Integer page) {
+        
+        String result;
+        
+        if (with_genres != null) {
+            result = tmdbService.getUpcomingMoviesByGenre(with_genres, page);
+        } else {
+            result = tmdbService.getUpcomingMovies(page);
+        }
+        
         return ResponseEntity.ok(result);
     }
 

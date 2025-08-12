@@ -35,26 +35,28 @@ public class TMDBService {
                 .block();
     }
 
-    // Updated getPopularMovies with pagination support and content filtering
     public String getPopularMovies(Integer page) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
-                .path("/movie/popular")
+                .path("/discover/movie")
+                .queryParam("include_adult", "false")
+                .queryParam("include_video", "false")
+                .queryParam("language", "en-US")
                 .queryParam("page", page != null ? page : 1)
                 .queryParam("certification_country", "US")
-                .queryParam("certification.lte", "PG-13") // No R or NC-17 rated movies
+                .queryParam("sort_by", "popularity.desc")
+                .queryParam("certification.lte", "PG-13")
                 .build())
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
     }
 
-    // Overloaded method for backward compatibility
     public String getPopularMovies() {
         return getPopularMovies(1);
     }
 
-    public String getUpcomingMovies() {
+    public String getUpcomingMovies(Integer page) {
         ZoneId zone = ZoneId.of("America/New_York");
         LocalDate startDate = LocalDate.now(zone);
         LocalDate endDate = startDate.plusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
@@ -65,10 +67,39 @@ public class TMDBService {
                 .queryParam("include_adult", "false")
                 .queryParam("include_video", "false")
                 .queryParam("language", "en-US")
-                .queryParam("page", "1")
-                 .queryParam("certification_country", "US")
+                .queryParam("page", page != null ? page : 1)
+                .queryParam("certification_country", "US")
                 .queryParam("sort_by", "popularity.desc")
                 .queryParam("certification.lte", "PG-13")
+                .queryParam("primary_release_date.gte", startDate.toString())
+                .queryParam("primary_release_date.lte", endDate.toString())
+                .build()
+                )
+                .retrieve()
+                .bodyToMono(String.class)
+                .block();
+    }
+
+    public String getUpcomingMovies() {
+        return getUpcomingMovies(1);
+    }
+
+    public String getUpcomingMoviesByGenre(Integer genreId, Integer page) {
+        ZoneId zone = ZoneId.of("America/New_York");
+        LocalDate startDate = LocalDate.now(zone);
+        LocalDate endDate = startDate.plusMonths(1).with(TemporalAdjusters.lastDayOfMonth());
+
+        return webClient.get()
+                .uri(uriBuilder -> uriBuilder
+                .path("/discover/movie")
+                .queryParam("include_adult", "false")
+                .queryParam("include_video", "false")
+                .queryParam("language", "en-US")
+                .queryParam("page", page != null ? page : 1)
+                .queryParam("certification_country", "US")
+                .queryParam("sort_by", "popularity.desc")
+                .queryParam("certification.lte", "PG-13")
+                .queryParam("with_genres", genreId.toString())
                 .queryParam("primary_release_date.gte", startDate.toString())
                 .queryParam("primary_release_date.lte", endDate.toString())
                 .build()
@@ -90,7 +121,6 @@ public class TMDBService {
     }
 
     public String getMoviesByGenres(List<Integer> genreIds, Integer page) {
-        // Convert list of IDs to comma-separated string (e.g., "28,35")
         String genreIdsStr = genreIds.stream()
                 .map(String::valueOf)
                 .reduce((a, b) -> a + "," + b)
@@ -103,7 +133,9 @@ public class TMDBService {
                 .queryParam("include_video", "false")
                 .queryParam("language", "en-US")
                 .queryParam("page", page != null ? page : 1)
+                .queryParam("certification_country", "US")
                 .queryParam("sort_by", "popularity.desc")
+                .queryParam("certification.lte", "PG-13")
                 .queryParam("with_genres", genreIdsStr) 
                 .build())
                 .retrieve()
