@@ -35,12 +35,14 @@ public class TMDBService {
                 .block();
     }
 
-    // Updated getPopularMovies with pagination support
+    // Updated getPopularMovies with pagination support and content filtering
     public String getPopularMovies(Integer page) {
         return webClient.get()
                 .uri(uriBuilder -> uriBuilder
                 .path("/movie/popular")
                 .queryParam("page", page != null ? page : 1)
+                .queryParam("certification_country", "US")
+                .queryParam("certification.lte", "PG-13") // No R or NC-17 rated movies
                 .build())
                 .retrieve()
                 .bodyToMono(String.class)
@@ -87,12 +89,6 @@ public class TMDBService {
                 .block();
     }
 
-    /**
-     * Filter movies by genre IDs using TMDB discover endpoint
-     * @param genreIds List of genre IDs (e.g., [28, 35] for Action and Comedy)
-     * @param page Page number (optional, defaults to 1)
-     * @return JSON response with filtered movies
-     */
     public String getMoviesByGenres(List<Integer> genreIds, Integer page) {
         // Convert list of IDs to comma-separated string (e.g., "28,35")
         String genreIdsStr = genreIds.stream()
@@ -108,31 +104,21 @@ public class TMDBService {
                 .queryParam("language", "en-US")
                 .queryParam("page", page != null ? page : 1)
                 .queryParam("sort_by", "popularity.desc")
-                .queryParam("with_genres", genreIdsStr) // Key parameter for genre filtering
+                .queryParam("with_genres", genreIdsStr) 
                 .build())
                 .retrieve()
                 .bodyToMono(String.class)
                 .block();
     }
 
-    /**
-     * Overloaded method with default page 1
-     */
     public String getMoviesByGenres(List<Integer> genreIds) {
         return getMoviesByGenres(genreIds, 1);
     }
 
-    /**
-     * Filter movies by single genre ID
-     */
     public String getMoviesByGenre(Integer genreId, Integer page) {
         return getMoviesByGenres(List.of(genreId), page);
     }
 
-    /**
-     * Get all available genres from TMDB
-     * @return JSON response with genre list
-     */
     public String getGenres() {
         return webClient.get()
                 .uri("/genre/movie/list")
