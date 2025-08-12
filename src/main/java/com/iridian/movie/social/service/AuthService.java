@@ -19,21 +19,26 @@ public class AuthService {
         this.jwtUtil = jwtUtil;
     }
 
-   public User findByUsername(String username) {
-    return userRepository.findByUsername(username)
-            .orElseThrow(() -> new RuntimeException("User not found"));
-   }
+    public User findByUsername(String username) {
+        return userRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
 
-   public User signup(User user) {
+    public User signup(User user) {
         String hashedPassword = passwordEncoder.encode(user.getPasswordHash());
         user.setPasswordHash(hashedPassword);
         return userRepository.save(user);
     }
 
+    public User findByUserId(String userId) {
+        return userRepository.findByUserId(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
     public String login(String username, String rawPassword) {
-         String normalizedUsername = username.toLowerCase();
-         User user = userRepository.findByUsername(normalizedUsername)
-            .orElseThrow(() -> new RuntimeException("User not found"));
+        String normalizedUsername = username.toLowerCase();
+        User user = userRepository.findByUsername(normalizedUsername)
+                .orElseThrow(() -> new RuntimeException("User not found"));
         if (!passwordEncoder.matches(rawPassword, user.getPasswordHash())) {
             throw new RuntimeException("Invalid password");
         }
@@ -41,4 +46,3 @@ public class AuthService {
         return jwtUtil.generateToken(user.getUserId(), user.getUsername());
     }
 }
-

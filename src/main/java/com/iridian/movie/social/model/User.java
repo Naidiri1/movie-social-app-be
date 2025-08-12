@@ -1,6 +1,7 @@
 package com.iridian.movie.social.model;
 
 import java.io.Serializable;
+import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,7 +11,6 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "users")
 public class User implements Serializable {
-
 
     @Id
     @Column(name = "user_id", nullable = false, unique = true)
@@ -25,6 +25,11 @@ public class User implements Serializable {
     @Column(name = "password_hash", nullable = false)
     private String passwordHash;
 
+    @Column(name = "share_slug", columnDefinition = "UUID")
+    private UUID shareSlug;
+
+    @Column(name = "share_enabled", nullable = false)
+    private Boolean shareEnabled = false;
     // === Getters and Setters ===
 
     public String getUserId() {
@@ -59,15 +64,20 @@ public class User implements Serializable {
         this.passwordHash = passwordHash;
     }
 
-    // === toString() ===
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "userId=" + userId +
-                ", username='" + username + '\'' +
-                ", email='" + email + '\'' +
-                ", password='[PROTECTED]'" +
-                '}';
+    public UUID getShareSlug() {
+        return shareSlug;
     }
+
+    public void setShareSlug(UUID shareSlug) {
+        this.shareSlug = shareSlug;
+    }
+
+    public Boolean getShareEnabled() {
+        return shareEnabled;
+    }
+
+    public void setShareEnabled(Boolean shareEnabled) {
+        this.shareEnabled = shareEnabled;
+    }
+
 }

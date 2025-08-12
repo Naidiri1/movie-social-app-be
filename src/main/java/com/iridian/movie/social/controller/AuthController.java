@@ -22,36 +22,37 @@ import com.iridian.movie.social.util.JwtUtil;
 import com.iridian.movie.social.util.PrimaryKey;
 import com.iridian.movie.social.util.TokenBlackList;
 
-    @RestController
-    @RequestMapping("/api/auth")
-    public class AuthController {
-    private final AuthService authService;
-    private final JwtUtil jwtUtil; 
+@RestController
+@RequestMapping("/api/auth")
+public class AuthController {
 
-    public AuthController(AuthService authService,  JwtUtil jwtUtil) {
+    private final AuthService authService;
+    private final JwtUtil jwtUtil;
+
+    public AuthController(AuthService authService, JwtUtil jwtUtil) {
         this.authService = authService;
         this.jwtUtil = jwtUtil;
     }
 
-   @PostMapping("/signup")
+    @PostMapping("/signup")
     public ResponseEntity<?> signup(@RequestBody SignupRequest request) {
-    User user = new User();
-    user.setUserId(PrimaryKey.get());
-    user.setUsername(request.getUsername().toLowerCase());
-    user.setEmail(request.getEmail());
-    user.setPasswordHash(request.getPassword());
+        User user = new User();
+        user.setUserId(PrimaryKey.get());
+        user.setUsername(request.getUsername().toLowerCase());
+        user.setEmail(request.getEmail());
+        user.setPasswordHash(request.getPassword());
 
-    User savedUser = authService.signup(user);
-    String token = jwtUtil.generateToken(savedUser.getUserId(), savedUser.getUsername());
+        User savedUser = authService.signup(user);
+        String token = jwtUtil.generateToken(savedUser.getUserId(), savedUser.getUsername());
 
-    Map<String, Object> response = new HashMap<>();
-    response.put("access_token", token);
-    response.put("username", savedUser.getUsername());
-    response.put("email", savedUser.getEmail());
-    response.put("userId", savedUser.getUserId()); 
+        Map<String, Object> response = new HashMap<>();
+        response.put("access_token", token);
+        response.put("username", savedUser.getUsername());
+        response.put("email", savedUser.getEmail());
+        response.put("userId", savedUser.getUserId());
 
-    return ResponseEntity.ok(response);
-   }
+        return ResponseEntity.ok(response);
+    }
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody LoginRequest request) {
@@ -86,14 +87,13 @@ import com.iridian.movie.social.util.TokenBlackList;
    @Autowired
     private TokenBlackList tokenBlacklist;
 
-   @PostMapping("/logoutUser")
+    @PostMapping("/logoutUser")
     public ResponseEntity<?> logoutUser(@RequestHeader("Authorization") String token) {
-    String jwt = token.replace("Bearer ", "");
-    tokenBlacklist.add(jwt); 
-    // Optional: Add token to blacklist, delete refresh tokens, etc.
+        String jwt = token.replace("Bearer ", "");
+        tokenBlacklist.add(jwt);
 
-    System.out.println("User logged out");
+        System.out.println("User logged out");
 
-    return ResponseEntity.ok("Logged out");
-}
+        return ResponseEntity.ok("Logged out");
+    }
 }
