@@ -46,7 +46,7 @@ public class Top10Controller {
 
     @GetMapping
     public ResponseEntity<List<Top10Flat>> getTop10(@RequestParam String userId) {
-        List<Top10> top10 = top10Repository.findByUser_UserIdOrderByRankAsc(userId);
+        List<Top10> top10 = top10Repository.findByUserUserIdOrderByRankAsc(userId);
         List<Top10Flat> dtos = top10.stream()
                 .map(this::convertToFlatDTO)
                 .collect(Collectors.toList());

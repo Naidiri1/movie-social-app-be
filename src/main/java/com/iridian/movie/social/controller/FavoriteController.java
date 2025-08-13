@@ -44,7 +44,7 @@ public class FavoriteController {
 
     @GetMapping
     public ResponseEntity<List<FavoriteFlat>> getFavorites(@RequestParam String userId) {
-        List<Favorites> favorites = favoriteRepository.findByUser_UserId(userId);
+        List<Favorites> favorites = favoriteRepository.findByUserUserId(userId);
         List<FavoriteFlat> dtos = favorites.stream()
                 .map(this::convertToFlatDTO)
                 .collect(Collectors.toList());

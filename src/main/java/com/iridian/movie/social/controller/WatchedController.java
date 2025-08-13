@@ -44,7 +44,7 @@ public class WatchedController {
 
     @GetMapping
     public ResponseEntity<List<WatchedFlat>> getWatched(@RequestParam String userId) {
-        List<Watched> watched = watchedRepository.findByUser_UserId(userId);
+        List<Watched> watched = watchedRepository.findByUserUserId(userId);
         List<WatchedFlat> dtos = watched.stream()
                 .map(this::convertToFlatDTO)
                 .collect(Collectors.toList());

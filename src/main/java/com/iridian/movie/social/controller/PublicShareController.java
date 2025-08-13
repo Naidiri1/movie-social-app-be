@@ -41,7 +41,7 @@ public class PublicShareController {
         var user = userRepo.findByShareSlugAndShareEnabledTrue(shareId)
                 .orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
 
-        var items = top10Repo.findByUser_UserIdOrderByRankAsc(user.getUserId())
+        var items = top10Repo.findByUserUserIdOrderByRankAsc(user.getUserId())
                 .stream()
                 .map(this::toFlatPublic)
                 .toList();
