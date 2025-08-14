@@ -62,29 +62,29 @@ public class AuthController {
 
     @GetMapping("/userSession")
     public ResponseEntity<?> getUserSession(@RequestHeader("Authorization") String token) {
-    try {
-        String jwt = token.replace("Bearer ", "");
-        String username = jwtUtil.extractUsername(jwt);
+        try {
+            String jwt = token.replace("Bearer ", "");
+            String username = jwtUtil.extractUsername(jwt);
 
-        if (jwtUtil.isTokenValid(jwt, username)) {
-            User user = authService.findByUsername(username);
+            if (jwtUtil.isTokenValid(jwt, username)) {
+                User user = authService.findByUsername(username);
 
-            Map<String, String> userInfo = new HashMap<>();
-            userInfo.put("username", user.getUsername());
-            userInfo.put("email", user.getEmail());
-            userInfo.put("userId", user.getUserId());
+                Map<String, String> userInfo = new HashMap<>();
+                userInfo.put("username", user.getUsername());
+                userInfo.put("email", user.getEmail());
+                userInfo.put("userId", user.getUserId());
 
-            return ResponseEntity.ok(userInfo);
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+                return ResponseEntity.ok(userInfo);
+            } else {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid token");
+            }
+
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session check failed");
         }
+    }
 
-    } catch (Exception e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Session check failed");
-      }
-   }
-
-   @Autowired
+    @Autowired
     private TokenBlackList tokenBlacklist;
 
     @PostMapping("/logoutUser")

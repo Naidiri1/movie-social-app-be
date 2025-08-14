@@ -1,6 +1,5 @@
 package com.iridian.movie.social.util;
 
-
 import static java.lang.Math.floor;
 import static java.lang.Math.random;
 

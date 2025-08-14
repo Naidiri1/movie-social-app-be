@@ -23,7 +23,7 @@ public class JwtUtil {
 
         return Jwts.builder()
                 .setSubject(username)
-                .claim("userId", userId) 
+                .claim("userId", userId)
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + 3600000)) // 1 hour
                 .signWith(key, SignatureAlgorithm.HS256)
@@ -43,8 +43,6 @@ public class JwtUtil {
         return extractAllClaims(token).getExpiration().before(new Date());
     }
 
-    
-
     private Claims extractAllClaims(String token) {
         SecretKey key = Keys.hmacShaKeyFor(secret.getBytes());
         return Jwts.parserBuilder()
@@ -54,4 +52,3 @@ public class JwtUtil {
                 .getBody();
     }
 }
-

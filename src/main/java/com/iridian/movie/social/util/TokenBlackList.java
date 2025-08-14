@@ -5,9 +5,10 @@ import java.util.Set;
 
 import org.springframework.stereotype.Component;
 
-@Component 
+@Component
 public class TokenBlackList {
-      private final Set<String> blacklist = new HashSet<>();
+
+    private final Set<String> blacklist = new HashSet<>();
 
     public void add(String token) {
         blacklist.add(token);

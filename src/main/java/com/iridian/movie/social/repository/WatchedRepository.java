@@ -12,9 +12,12 @@ import com.iridian.movie.social.model.Watched;
 
 @Repository
 public interface WatchedRepository extends JpaRepository<Watched, Long> {
+
     List<Watched> findByUserUserId(String userId);
+
     Page<Watched> findByUserUserIdOrderByCreatedAtDesc(String userId, Pageable pageable);
-     long countByUserUserId(String userId);
+
+    long countByUserUserId(String userId);
 
     Optional<Watched> findByUser_UserIdAndMovieId(String userId, Long movieId);
 }

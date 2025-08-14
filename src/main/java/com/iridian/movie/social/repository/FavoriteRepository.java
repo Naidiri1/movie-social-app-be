@@ -12,8 +12,12 @@ import com.iridian.movie.social.model.Favorites;
 
 @Repository
 public interface FavoriteRepository extends JpaRepository<Favorites, Long> {
+
     List<Favorites> findByUserUserId(String userId);
+
     Page<Favorites> findByUserUserIdOrderByCreatedAtDesc(String userId, Pageable pageable);
-     long countByUserUserId(String userId);
+
+    long countByUserUserId(String userId);
+
     Optional<Favorites> findByUser_UserIdAndMovieId(String userId, Long movieId);
 }

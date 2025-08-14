@@ -11,21 +11,20 @@ import jakarta.annotation.PostConstruct;
 
 @SpringBootApplication
 @EnableConfigurationProperties(JwtConfig.class)
-
 public class MovieSocialAppApplication {
 
     @Autowired
     private JwtConfig jwtConfig;
 
-   public static void main(String[] args) {
-    System.out.println("⚠️ STARTING MAIN METHOD");
-    SpringApplication.run(MovieSocialAppApplication.class, args);
-    System.out.println("✅ MAIN METHOD COMPLETE"); // should never print — Spring takes over
-}
+    public static void main(String[] args) {
+        SpringApplication.run(MovieSocialAppApplication.class, args);
+    }
 
     @PostConstruct
-    public void logSecret() {
-    System.out.println(">>> MAIN STARTED"); // 👈 should always print
-		System.out.println("=== JWT SECRET: " + jwtConfig.getSecret());
+    public void init() {
+        System.out.println("===========================================");
+        System.out.println("Movie Social App Started Successfully!");
+        System.out.println("JWT Secret Key Loaded: " + (jwtConfig.getSecret() != null ? "Yes" : "No"));
+        System.out.println("===========================================");
     }
 }

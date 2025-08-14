@@ -51,14 +51,12 @@ public class WatchLaterFlat {
         this.userLikeStatus = null;
     }
 
-    // Method to create DTO and set genres from entity's genre IDs
     public static WatchLaterFlat createWithGenres(WatchLater entity) {
         WatchLaterFlat dto = new WatchLaterFlat();
         dto.setGenres(GenreMap.toNames(entity.getGenreIds()));
         return dto;
     }
 
-    // Default constructor
     public WatchLaterFlat() {
     }
 

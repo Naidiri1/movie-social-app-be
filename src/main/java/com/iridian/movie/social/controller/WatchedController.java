@@ -34,7 +34,7 @@ public class WatchedController {
 
     private final WatchedRepository watchedRepository;
     private final UserRepository userRepository;
-    
+
     @Autowired(required = false)
     private MovieCommentLikeService likeService;
 
@@ -57,20 +57,20 @@ public class WatchedController {
             @RequestParam String userId,
             @RequestParam(required = false) String viewerId,
             Pageable pageable) {
-        
+
         Page<Watched> watchedPage = watchedRepository.findByUserUserIdOrderByCreatedAtDesc(userId, pageable);
         Page<WatchedFlat> dtoPage = watchedPage.map(this::convertToFlatDTO);
-        
+
         if (likeService != null && !dtoPage.isEmpty()) {
             List<WatchedFlat> content = dtoPage.getContent();
             for (WatchedFlat dto : content) {
                 try {
                     Map<String, Object> likeData = likeService.getLikeData(
-                        dto.getId(),
-                        EntryType.WATCHED,
-                        viewerId
+                            dto.getId(),
+                            EntryType.WATCHED,
+                            viewerId
                     );
-                    
+
                     dto.setCommentLikes((Long) likeData.get("likes"));
                     dto.setCommentDislikes((Long) likeData.get("dislikes"));
                     dto.setUserLikeStatus((String) likeData.get("userStatus"));
@@ -81,7 +81,7 @@ public class WatchedController {
                 }
             }
         }
-        
+
         return ResponseEntity.ok(dtoPage);
     }
 
@@ -89,21 +89,21 @@ public class WatchedController {
     public ResponseEntity<List<WatchedFlat>> getAllWatched(
             @RequestParam String userId,
             @RequestParam(required = false) String viewerId) {
-        
+
         List<Watched> watchedList = watchedRepository.findByUserUserId(userId);
         List<WatchedFlat> dtos = watchedList.stream()
                 .map(this::convertToFlatDTO)
                 .collect(Collectors.toList());
-        
+
         if (likeService != null) {
             for (WatchedFlat dto : dtos) {
                 try {
                     Map<String, Object> likeData = likeService.getLikeData(
-                        dto.getId(),
-                        EntryType.WATCHED,
-                        viewerId
+                            dto.getId(),
+                            EntryType.WATCHED,
+                            viewerId
                     );
-                    
+
                     dto.setCommentLikes((Long) likeData.get("likes"));
                     dto.setCommentDislikes((Long) likeData.get("dislikes"));
                     dto.setUserLikeStatus((String) likeData.get("userStatus"));
@@ -114,7 +114,7 @@ public class WatchedController {
                 }
             }
         }
-        
+
         return ResponseEntity.ok(dtos);
     }
 
@@ -171,97 +171,95 @@ public class WatchedController {
     }
 
     // ============= LIKE/DISLIKE METHODS =============
-
     @PostMapping("/{watchedId}/like")
     public ResponseEntity<Map<String, Object>> likeWatched(
             @PathVariable Long watchedId,
             @RequestParam String userId) {
-        
+
         Map<String, Object> response = new HashMap<>();
-        
+
         Watched watched = watchedRepository.findById(watchedId)
                 .orElseThrow(() -> new RuntimeException("Watched entry not found"));
-        
+
         if (watched.getUser().getUserId().equals(userId)) {
             response.put("error", "You cannot like your own watched entry");
             return ResponseEntity.badRequest().body(response);
         }
-        
+
         if (likeService != null) {
             try {
                 return ResponseEntity.ok(likeService.toggleLike(
-                    watchedId, "WATCHED", userId, true
+                        watchedId, "WATCHED", userId, true
                 ));
             } catch (Exception e) {
                 response.put("error", e.getMessage());
                 return ResponseEntity.badRequest().body(response);
             }
         }
-        
+
         response.put("action", "added");
         response.put("likes", 1L);
         response.put("dislikes", 0L);
         response.put("message", "Mock response - service not available");
         return ResponseEntity.ok(response);
     }
-    
 
     @PostMapping("/{watchedId}/dislike")
     public ResponseEntity<Map<String, Object>> dislikeWatched(
             @PathVariable Long watchedId,
             @RequestParam String userId) {
-        
+
         Map<String, Object> response = new HashMap<>();
-        
+
         Watched watched = watchedRepository.findById(watchedId)
                 .orElseThrow(() -> new RuntimeException("Watched entry not found"));
-        
+
         if (watched.getUser().getUserId().equals(userId)) {
             response.put("error", "You cannot dislike your own watched entry");
             return ResponseEntity.badRequest().body(response);
         }
-        
+
         if (likeService != null) {
             try {
                 return ResponseEntity.ok(likeService.toggleLike(
-                    watchedId, "WATCHED", userId, false
+                        watchedId, "WATCHED", userId, false
                 ));
             } catch (Exception e) {
                 response.put("error", e.getMessage());
                 return ResponseEntity.badRequest().body(response);
             }
         }
-        
+
         response.put("action", "added");
         response.put("likes", 0L);
         response.put("dislikes", 1L);
         response.put("message", "Mock response - service not available");
         return ResponseEntity.ok(response);
     }
-    
+
     @GetMapping("/{watchedId}/likes")
     public ResponseEntity<Map<String, Object>> getWatchedLikes(
             @PathVariable Long watchedId,
             @RequestParam(required = false) String userId) {
-        
+
         Map<String, Object> data = new HashMap<>();
-        
+
         if (!watchedRepository.existsById(watchedId)) {
             data.put("error", "Watched entry not found");
             return ResponseEntity.notFound().build();
         }
-        
+
         if (likeService != null) {
             try {
                 return ResponseEntity.ok(likeService.getLikeData(
-                    watchedId, EntryType.WATCHED, userId
+                        watchedId, EntryType.WATCHED, userId
                 ));
             } catch (Exception e) {
                 data.put("error", e.getMessage());
                 return ResponseEntity.badRequest().body(data);
             }
         }
-        
+
         data.put("likes", 0L);
         data.put("dislikes", 0L);
         data.put("userStatus", null);

@@ -12,8 +12,11 @@ import com.iridian.movie.social.model.WatchLater;
 
 @Repository
 public interface WatchLaterRepository extends JpaRepository<WatchLater, Long> {
+
     List<WatchLater> findByUserUserId(String userId);
+
     Page<WatchLater> findByUserUserIdOrderByCreatedAtDesc(String userId, Pageable pageable);
+
     long countByUserUserId(String userId);
 
     Optional<WatchLater> findByUserUserIdAndMovieId(String userId, Long movieId);

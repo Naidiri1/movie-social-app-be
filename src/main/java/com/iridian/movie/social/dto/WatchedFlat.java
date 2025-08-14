@@ -50,14 +50,12 @@ public class WatchedFlat {
         this.userLikeStatus = null;
     }
 
-    // Method to create DTO and set genres from entity's genre IDs
     public static WatchedFlat createWithGenres(Watched entity) {
         WatchedFlat dto = new WatchedFlat();
         dto.setGenres(GenreMap.toNames(entity.getGenreIds()));
         return dto;
     }
 
-    // Default constructor
     public WatchedFlat() {
     }
 

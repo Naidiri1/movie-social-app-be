@@ -21,19 +21,13 @@ public class StatsController {
     @Autowired
     private MovieCommentLikeService likeService;
     
-    /**
-     * Get user's like statistics
-     * GET /api/stats/user/{userId}
-     */
+ 
     @GetMapping("/user/{userId}")
     public ResponseEntity<Map<String, Object>> getUserStats(@PathVariable String userId) {
         return ResponseEntity.ok(likeService.getUserStats(userId));
     }
     
-    /**
-     * Get trending content
-     * GET /api/stats/trending?type=FAVORITE&limit=10
-     */
+
     @GetMapping("/trending")
     public ResponseEntity<List<Map<String, Object>>> getTrending(
             @RequestParam(defaultValue = "FAVORITE") String type,
@@ -41,10 +35,7 @@ public class StatsController {
         return ResponseEntity.ok(likeService.getTrendingContent(type, limit));
     }
     
-    /**
-     * Get users who liked specific content
-     * GET /api/stats/likes/{entryId}/users?type=FAVORITE
-     */
+
     @GetMapping("/likes/{entryId}/users")
     public ResponseEntity<List<String>> getUsersWhoLiked(
             @PathVariable Long entryId,
@@ -53,10 +44,7 @@ public class StatsController {
         return ResponseEntity.ok(likeService.getUsersWhoLiked(entryId, entryType));
     }
     
-    /**
-     * Get recent activity on user's content
-     * GET /api/stats/user/{userId}/activity
-     */
+ 
     @GetMapping("/user/{userId}/activity")
     public ResponseEntity<List<Map<String, Object>>> getUserActivity(
             @PathVariable String userId,
@@ -64,10 +52,7 @@ public class StatsController {
         return ResponseEntity.ok(likeService.getUserContentActivity(userId, limit));
     }
     
-    /**
-     * Find users with similar taste
-     * GET /api/stats/user/{userId}/similar
-     */
+    
     @GetMapping("/user/{userId}/similar")
     public ResponseEntity<List<Map<String, Object>>> getSimilarUsers(
             @PathVariable String userId,

@@ -15,36 +15,40 @@ import com.iridian.movie.social.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, String> {
-     Optional<User> findByUsername(String username);
+
+    Optional<User> findByUsername(String username);
+
     Optional<User> findByEmail(String email);
-    Optional<User> findByUserId(String userId); 
+
+    Optional<User> findByUserId(String userId);
+
     Page<User> findByUsernameContainingIgnoreCase(String username, Pageable pageable);
-    
-    @Query("SELECT new com.iridian.movie.social.dto.UserSearchDTO(" +
-           "u.userId, " +
-           "u.username, " +
-           "COALESCE((SELECT COUNT(f) FROM Favorites f WHERE f.user.userId = u.userId), 0), " +
-           "COALESCE((SELECT COUNT(w) FROM Watched w WHERE w.user.userId = u.userId), 0), " +
-           "COALESCE((SELECT COUNT(t) FROM Top10 t WHERE t.user.userId = u.userId), 0), " +
-           "COALESCE((SELECT COUNT(wl) FROM WatchLater wl WHERE wl.user.userId = u.userId), 0)) " +
-           "FROM User u " +
-           "WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :query, '%'))")
+
+    @Query("SELECT new com.iridian.movie.social.dto.UserSearchDTO("
+            + "u.userId, "
+            + "u.username, "
+            + "COALESCE((SELECT COUNT(f) FROM Favorites f WHERE f.user.userId = u.userId), 0), "
+            + "COALESCE((SELECT COUNT(w) FROM Watched w WHERE w.user.userId = u.userId), 0), "
+            + "COALESCE((SELECT COUNT(t) FROM Top10 t WHERE t.user.userId = u.userId), 0), "
+            + "COALESCE((SELECT COUNT(wl) FROM WatchLater wl WHERE wl.user.userId = u.userId), 0)) "
+            + "FROM User u "
+            + "WHERE LOWER(u.username) LIKE LOWER(CONCAT('%', :query, '%'))")
     Page<UserSearchDTO> searchUsersWithCounts(@Param("query") String query, Pageable pageable);
-    
+
     Optional<User> findByShareSlugAndShareEnabledTrue(UUID shareSlug);
-    
-    @Query("SELECT new com.iridian.movie.social.dto.UserSearchDTO(" +
-           "u.userId, " +
-           "u.username, " +
-           "COALESCE((SELECT COUNT(f) FROM Favorites f WHERE f.user.userId = u.userId), 0), " +
-           "COALESCE((SELECT COUNT(w) FROM Watched w WHERE w.user.userId = u.userId), 0), " +
-           "COALESCE((SELECT COUNT(t) FROM Top10 t WHERE t.user.userId = u.userId), 0), " +
-           "COALESCE((SELECT COUNT(wl) FROM WatchLater wl WHERE wl.user.userId = u.userId), 0)) " +
-           "FROM User u " +
-           "ORDER BY (" +
-           "COALESCE((SELECT COUNT(f) FROM Favorites f WHERE f.user.userId = u.userId), 0) + " +
-           "COALESCE((SELECT COUNT(w) FROM Watched w WHERE w.user.userId = u.userId), 0) + " +
-           "COALESCE((SELECT COUNT(t) FROM Top10 t WHERE t.user.userId = u.userId), 0) + " +
-           "COALESCE((SELECT COUNT(wl) FROM WatchLater wl WHERE wl.user.userId = u.userId), 0)) DESC")
+
+    @Query("SELECT new com.iridian.movie.social.dto.UserSearchDTO("
+            + "u.userId, "
+            + "u.username, "
+            + "COALESCE((SELECT COUNT(f) FROM Favorites f WHERE f.user.userId = u.userId), 0), "
+            + "COALESCE((SELECT COUNT(w) FROM Watched w WHERE w.user.userId = u.userId), 0), "
+            + "COALESCE((SELECT COUNT(t) FROM Top10 t WHERE t.user.userId = u.userId), 0), "
+            + "COALESCE((SELECT COUNT(wl) FROM WatchLater wl WHERE wl.user.userId = u.userId), 0)) "
+            + "FROM User u "
+            + "ORDER BY ("
+            + "COALESCE((SELECT COUNT(f) FROM Favorites f WHERE f.user.userId = u.userId), 0) + "
+            + "COALESCE((SELECT COUNT(w) FROM Watched w WHERE w.user.userId = u.userId), 0) + "
+            + "COALESCE((SELECT COUNT(t) FROM Top10 t WHERE t.user.userId = u.userId), 0) + "
+            + "COALESCE((SELECT COUNT(wl) FROM WatchLater wl WHERE wl.user.userId = u.userId), 0)) DESC")
     Page<UserSearchDTO> findMostActiveUsers(Pageable pageable);
 }
