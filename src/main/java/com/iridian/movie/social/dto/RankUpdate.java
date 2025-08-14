@@ -1,6 +1,7 @@
 package com.iridian.movie.social.dto;
 
 public class RankUpdate {
+
     private Long id;
     private Integer rank;
 

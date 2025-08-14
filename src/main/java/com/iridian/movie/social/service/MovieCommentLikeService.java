@@ -39,13 +39,6 @@ public class MovieCommentLikeService {
     @Autowired(required = false)
     private WatchLaterRepository watchLaterRepository;
 
-    /**
-     * Toggle like/dislike on a movie comment
-     */
-    // In MovieCommentLikeService.java, update the toggleLike method:
-    /**
-     * Toggle like/dislike on a movie comment
-     */
     public Map<Long, Map<String, Object>> getBatchLikeData(List<Long> entryIds,
             EntryType entryType,
             String viewerId) {
@@ -55,7 +48,6 @@ public class MovieCommentLikeService {
             return result;
         }
 
-        // Initialize all entries with default values
         for (Long entryId : entryIds) {
             Map<String, Object> data = new HashMap<>();
             data.put("likes", 0L);
@@ -64,11 +56,9 @@ public class MovieCommentLikeService {
             result.put(entryId, data);
         }
 
-        // Get all likes/dislikes for these entries
         List<MovieCommentLike> allLikes = likeRepository
                 .findByMovieEntryIdsAndType(entryIds, entryType);
 
-        // Count likes and dislikes for each entry
         for (MovieCommentLike like : allLikes) {
             Map<String, Object> entryData = result.get(like.getMovieEntryId());
             if (like.getIsLike()) {
@@ -78,7 +68,6 @@ public class MovieCommentLikeService {
             }
         }
 
-        // Get viewer's specific reactions if viewerId provided
         if (viewerId != null && !viewerId.isEmpty()) {
             List<MovieCommentLike> userLikes = likeRepository
                     .findUserLikesForEntries(viewerId, entryIds, entryType);
@@ -97,18 +86,15 @@ public class MovieCommentLikeService {
 
         EntryType entryType = EntryType.valueOf(entryTypeStr.toUpperCase());
 
-        // Get the owner of the movie entry (who posted the favorite/watched/etc)
         String movieOwnerId = getEntryOwner(movieEntryId, entryType);
         if (movieOwnerId == null) {
             throw new RuntimeException("Movie entry not found with ID: " + movieEntryId + " and type: " + entryType);
         }
 
-        // Users cannot like their own comments/entries
         if (movieOwnerId.equals(currentUserId)) {
             throw new RuntimeException("You cannot like your own " + entryType.toString().toLowerCase());
         }
 
-        // Check for existing reaction
         Optional<MovieCommentLike> existing = likeRepository
                 .findByUserIdAndMovieEntryIdAndEntryType(currentUserId, movieEntryId, entryType);
 
@@ -117,30 +103,26 @@ public class MovieCommentLikeService {
         if (existing.isPresent()) {
             MovieCommentLike reaction = existing.get();
 
-            // Toggle off if clicking same reaction
             if (reaction.getIsLike() == isLike) {
                 likeRepository.delete(reaction);
                 response.put("action", "removed");
-            } // Switch reaction (from like to dislike or vice versa)
-            else {
+            } else {
                 reaction.setIsLike(isLike);
                 likeRepository.save(reaction);
                 response.put("action", "switched");
             }
-        } // Add new reaction
-        else {
+        } else {
             MovieCommentLike newLike = new MovieCommentLike(
-                    currentUserId, // who is liking
-                    movieEntryId, // what entry they're liking
-                    entryType, // type of entry (FAVORITE, WATCHED, etc)
-                    movieOwnerId, // who owns the entry (THIS IS THE KEY PART)
-                    isLike // like or dislike
+                    currentUserId,
+                    movieEntryId,
+                    entryType,
+                    movieOwnerId,
+                    isLike
             );
             likeRepository.save(newLike);
             response.put("action", "added");
         }
 
-        // Return updated counts
         long likes = likeRepository.countLikes(movieEntryId, entryType);
         long dislikes = likeRepository.countDislikes(movieEntryId, entryType);
         response.put("likes", likes);
@@ -151,13 +133,9 @@ public class MovieCommentLikeService {
         return response;
     }
 
-    /**
-     * Get like counts and user status for a single entry
-     */
     public Map<String, Object> getLikeData(Long entryId, EntryType entryType, String currentUserId) {
         Map<String, Object> data = new HashMap<>();
 
-        // Get counts
         long likes = likeRepository.countLikes(entryId, entryType);
         long dislikes = likeRepository.countDislikes(entryId, entryType);
 
@@ -166,7 +144,6 @@ public class MovieCommentLikeService {
         data.put("entryId", entryId);
         data.put("entryType", entryType.toString());
 
-        // Get current user's status if they're logged in
         if (currentUserId != null && !currentUserId.isEmpty()) {
             Optional<MovieCommentLike> userLike = likeRepository
                     .findByUserIdAndMovieEntryIdAndEntryType(currentUserId, entryId, entryType);
@@ -183,10 +160,6 @@ public class MovieCommentLikeService {
         return data;
     }
 
-    /**
-     * Helper method to get the owner of a movie entry This looks up who created
-     * the favorite/watched/etc entry
-     */
     private String getEntryOwner(Long entryId, EntryType type) {
         try {
             switch (type) {
@@ -225,9 +198,6 @@ public class MovieCommentLikeService {
         return null;
     }
 
-    /**
-     * Get user statistics (total likes/dislikes received)
-     */
     public Map<String, Object> getUserStats(String userId) {
         Map<String, Object> stats = new HashMap<>();
         stats.put("totalLikesReceived", likeRepository.countLikesForOwner(userId));
@@ -239,9 +209,6 @@ public class MovieCommentLikeService {
         return stats;
     }
 
-    /**
-     * Get trending content by entry type
-     */
     public List<Map<String, Object>> getTrendingContent(String entryType, int limit) {
         List<Object[]> results = likeRepository.findMostLikedEntries(entryType, limit);
         List<Map<String, Object>> trending = new ArrayList<>();
@@ -252,7 +219,6 @@ public class MovieCommentLikeService {
             item.put("likeCount", row[1]);
             item.put("entryType", entryType);
 
-            // Fetch additional details based on entry type
             Long entryId = ((Number) row[0]).longValue();
             enrichWithEntryDetails(item, entryId, EntryType.valueOf(entryType));
 
@@ -262,24 +228,15 @@ public class MovieCommentLikeService {
         return trending;
     }
 
-    /**
-     * Get users who liked a specific entry
-     */
     public List<String> getUsersWhoLiked(Long entryId, EntryType entryType) {
         return likeRepository.findUserIdsWhoLiked(entryId, entryType);
     }
 
-    /**
-     * Delete all likes when an entry is deleted
-     */
     @Transactional
     public void removeAllLikesForEntry(Long entryId, EntryType entryType) {
         likeRepository.deleteByMovieEntryIdAndEntryType(entryId, entryType);
     }
 
-    /**
-     * Get recent activity for a user's content
-     */
     public List<Map<String, Object>> getUserContentActivity(String userId, int limit) {
         List<MovieCommentLike> recentLikes = likeRepository.findByMovieOwnerId(userId);
 
@@ -297,9 +254,6 @@ public class MovieCommentLikeService {
                 .collect(Collectors.toList());
     }
 
-    /**
-     * Find users with similar taste (who liked the same content)
-     */
     public List<Map<String, Object>> findSimilarUsers(String userId, int limit) {
         List<Object[]> results = likeRepository.findUsersWithSimilarTaste(userId, limit);
         List<Map<String, Object>> similarUsers = new ArrayList<>();
@@ -308,16 +262,12 @@ public class MovieCommentLikeService {
             Map<String, Object> user = new HashMap<>();
             user.put("userId", row[0]);
             user.put("commonLikes", row[1]);
-            // You could fetch user details here
             similarUsers.add(user);
         }
 
         return similarUsers;
     }
 
-    /**
-     * Batch check if user has liked multiple entries (efficient for lists)
-     */
     public Map<Long, String> getUserReactionsForMultipleEntries(String userId, List<Long> entryIds, EntryType entryType) {
         List<Object[]> results = likeRepository.findUserReactionsForEntries(userId, entryIds, entryType);
         Map<Long, String> reactions = new HashMap<>();
@@ -331,7 +281,6 @@ public class MovieCommentLikeService {
         return reactions;
     }
 
-// Helper methods
     private double calculateLikeRatio(long likes, long dislikes) {
         if (likes + dislikes == 0) {
             return 0.0;
@@ -358,7 +307,42 @@ public class MovieCommentLikeService {
                     });
                 }
                 break;
-            // Add other entry types as needed
+        }
+    }
+
+    @Transactional
+
+    public Map<String, Object> removeLike(Long entryId, EntryType entryType, String userId) {
+        Map<String, Object> response = new HashMap<>();
+
+        try {
+            Optional<MovieCommentLike> existing = likeRepository
+                    .findByUserIdAndMovieEntryIdAndEntryType(userId, entryId, entryType);
+
+            if (existing.isPresent()) {
+                likeRepository.delete(existing.get());
+                response.put("action", "removed");
+                response.put("message", "Reaction removed successfully");
+            } else {
+                response.put("action", "none");
+                response.put("message", "No existing reaction to remove");
+            }
+
+            long likes = likeRepository.countLikes(entryId, entryType);
+            long dislikes = likeRepository.countDislikes(entryId, entryType);
+
+            response.put("likes", likes);
+            response.put("dislikes", dislikes);
+            response.put("entryId", entryId);
+            response.put("entryType", entryType.toString());
+            response.put("userStatus", null);
+
+            return response;
+
+        } catch (Exception e) {
+            System.err.println("Error removing like: " + e.getMessage());
+            e.printStackTrace();
+            throw new RuntimeException("Failed to remove reaction: " + e.getMessage(), e);
         }
     }
 
@@ -369,19 +353,16 @@ public class MovieCommentLikeService {
             return;
         }
 
-        // Extract all entry IDs
         List<Long> entryIds = dtos.stream()
                 .map(MovieEntryDTO::getId)
                 .collect(Collectors.toList());
 
-        // Get batch like data
         Map<Long, Map<String, Object>> likesData = getBatchLikeData(
                 entryIds,
                 entryType,
                 currentUserId
         );
 
-        // Apply to DTOs
         for (MovieEntryDTO dto : dtos) {
             Map<String, Object> likeData = likesData.get(dto.getId());
             if (likeData != null) {

@@ -32,19 +32,16 @@ public class User implements Serializable {
 
     @Column(name = "share_enabled", nullable = false)
     private Boolean shareEnabled = false;
-    
+
     @Column(name = "created_at")
     private LocalDateTime createdAt;
-    
-    // Automatically set createdAt when entity is first persisted
+
     @PrePersist
     protected void onCreate() {
         if (createdAt == null) {
             createdAt = LocalDateTime.now();
         }
     }
-
-    // === Getters and Setters ===
 
     public String getUserId() {
         return userId;
@@ -93,7 +90,7 @@ public class User implements Serializable {
     public void setShareEnabled(Boolean shareEnabled) {
         this.shareEnabled = shareEnabled;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

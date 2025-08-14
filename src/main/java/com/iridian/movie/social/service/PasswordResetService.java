@@ -83,19 +83,22 @@ public class PasswordResetService {
 
     }
 
-        @Value("${spring.mail.username}") private String from;
+    @Value("${spring.mail.username}")
+    private String from;
+
     private void sendEmail(String to, String link) {
-      SimpleMailMessage msg = new SimpleMailMessage();
-      msg.setFrom(from);
-      msg.setTo(to);
-      msg.setSubject("Reset your password");
-      msg.setText("Click the link to reset your password (valid 30 minutes):\n" + link);
-      mailSender.send(msg);
+        SimpleMailMessage msg = new SimpleMailMessage();
+        msg.setFrom(from);
+        msg.setTo(to);
+        msg.setSubject("Reset your password");
+        msg.setText("Click the link to reset your password (valid 30 minutes):\n" + link);
+        mailSender.send(msg);
     }
+
     private String generateRawToken(int bytes) {
         byte[] buf = new byte[bytes];
         random.nextBytes(buf);
-        return HexFormat.of().formatHex(buf); 
+        return HexFormat.of().formatHex(buf);
     }
 
     private String sha256(String s) {

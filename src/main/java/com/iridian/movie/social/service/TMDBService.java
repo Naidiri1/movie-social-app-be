@@ -136,7 +136,7 @@ public class TMDBService {
                 .queryParam("certification_country", "US")
                 .queryParam("sort_by", "popularity.desc")
                 .queryParam("certification.lte", "PG-13")
-                .queryParam("with_genres", genreIdsStr) 
+                .queryParam("with_genres", genreIdsStr)
                 .build())
                 .retrieve()
                 .bodyToMono(String.class)

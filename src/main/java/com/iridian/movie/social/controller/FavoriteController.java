@@ -33,6 +33,7 @@ public class FavoriteController {
     private final FavoriteRepository favoriteRepository;
     private final UserRepository userRepository;
 
+    
     @Autowired(required = false)
     private MovieCommentLikeService likeService;
 
@@ -50,57 +51,143 @@ public class FavoriteController {
         return ResponseEntity.ok(convertToFlatDTO(saved));
     }
 
-    @GetMapping
+     @GetMapping
     public ResponseEntity<List<FavoriteFlat>> getFavorites(
             @RequestParam String userId,
             @RequestParam(required = false) String viewerId) {
-
+        
+        System.out.println("=== Getting favorites for user: " + userId + ", viewer: " + viewerId + " ===");
+        
+        // Get all favorites for the user
         List<Favorites> favorites = favoriteRepository.findByUserUserId(userId);
+        System.out.println("Found " + favorites.size() + " favorites");
+        
+        // Convert to DTOs
         List<FavoriteFlat> dtos = favorites.stream()
                 .map(this::convertToFlatDTO)
                 .collect(Collectors.toList());
-
-        if (likeService != null) {
-            for (FavoriteFlat dto : dtos) {
+        
+        // Enrich with like data if service is available
+        if (likeService != null && !dtos.isEmpty()) {
+            System.out.println("Like service available, enriching data...");
+            
+            try {
+                // Use batch processing if available
+                List<Long> entryIds = dtos.stream()
+                        .map(FavoriteFlat::getId)
+                        .collect(Collectors.toList());
+                
+                System.out.println("Getting like data for entry IDs: " + entryIds);
+                
+                // Try batch method first
                 try {
-                    Map<String, Object> likeData = likeService.getLikeData(
-                            dto.getId(),
-                            EntryType.FAVORITE,
-                            viewerId
+                    Map<Long, Map<String, Object>> batchLikeData = likeService.getBatchLikeData(
+                        entryIds, 
+                        EntryType.FAVORITE, 
+                        viewerId
                     );
-
-                    dto.setCommentLikes((Long) likeData.get("likes"));
-                    dto.setCommentDislikes((Long) likeData.get("dislikes"));
-                    dto.setUserLikeStatus((String) likeData.get("userStatus"));
-                } catch (Exception e) {
+                    
+                    for (FavoriteFlat dto : dtos) {
+                        Map<String, Object> likeData = batchLikeData.get(dto.getId());
+                        if (likeData != null) {
+                            dto.setCommentLikes((Long) likeData.getOrDefault("likes", 0L));
+                            dto.setCommentDislikes((Long) likeData.getOrDefault("dislikes", 0L));
+                            dto.setUserLikeStatus((String) likeData.get("userStatus"));
+                            
+                            System.out.println("Favorite " + dto.getId() + 
+                                " - Likes: " + dto.getCommentLikes() + 
+                                ", Dislikes: " + dto.getCommentDislikes() + 
+                                ", User Status: " + dto.getUserLikeStatus());
+                        }
+                    }
+                    
+                } catch (Exception batchError) {
+                    System.out.println("Batch processing failed, falling back to individual queries: " + batchError.getMessage());
+                    
+                    // Fallback to individual queries
+                    for (FavoriteFlat dto : dtos) {
+                        try {
+                            Map<String, Object> likeData = likeService.getLikeData(
+                                dto.getId(),
+                                EntryType.FAVORITE,
+                                viewerId
+                            );
+                            
+                            dto.setCommentLikes((Long) likeData.getOrDefault("likes", 0L));
+                            dto.setCommentDislikes((Long) likeData.getOrDefault("dislikes", 0L));
+                            dto.setUserLikeStatus((String) likeData.get("userStatus"));
+                            
+                            System.out.println("Favorite " + dto.getId() + 
+                                " - Likes: " + dto.getCommentLikes() + 
+                                ", Dislikes: " + dto.getCommentDislikes() + 
+                                ", User Status: " + dto.getUserLikeStatus());
+                            
+                        } catch (Exception e) {
+                            System.err.println("Error enriching favorite " + dto.getId() + ": " + e.getMessage());
+                            dto.setCommentLikes(0L);
+                            dto.setCommentDislikes(0L);
+                            dto.setUserLikeStatus(null);
+                        }
+                    }
+                }
+                
+            } catch (Exception e) {
+                System.err.println("Error in like enrichment: " + e.getMessage());
+                e.printStackTrace();
+                // Set defaults if enrichment fails
+                for (FavoriteFlat dto : dtos) {
                     dto.setCommentLikes(0L);
                     dto.setCommentDislikes(0L);
                     dto.setUserLikeStatus(null);
                 }
             }
+        } else {
+            if (likeService == null) {
+                System.out.println("Like service not available");
+            }
+            if (dtos.isEmpty()) {
+                System.out.println("No favorites to enrich");
+            }
+            
+            // Set default values
+            for (FavoriteFlat dto : dtos) {
+                dto.setCommentLikes(0L);
+                dto.setCommentDislikes(0L);
+                dto.setUserLikeStatus(null);
+            }
         }
-
+        
+        System.out.println("=== Returning " + dtos.size() + " favorites ===");
         return ResponseEntity.ok(dtos);
     }
 
-    private FavoriteFlat convertToFlatDTO(Favorites f) {
-        return new FavoriteFlat(
-                f.getId(),
-                f.getUser().getUserId(),
-                f.getUser().getUsername(),
-                f.getMovieId(),
-                f.getTitle(),
-                f.getPosterPath(),
-                f.getComment(),
-                f.getUserScore(),
-                f.getCommentEnabled(),
-                f.getReleasedDate(),
-                f.getMovieDescription(),
-                f.getPublicScore(),
-                GenreMap.toNames(f.getGenreIds()), // Convert genre IDs to names
-                f.getCreatedAt()
-        );
+   private FavoriteFlat convertToFlatDTO(Favorites favorite) {
+    FavoriteFlat dto = new FavoriteFlat();
+    dto.setId(favorite.getId());
+    dto.setMovieId(favorite.getMovieId());
+    dto.setTitle(favorite.getTitle());
+    dto.setPosterPath(favorite.getPosterPath());
+    dto.setComment(favorite.getComment());
+    dto.setUserScore(favorite.getUserScore());
+    dto.setCommentEnabled(favorite.getCommentEnabled());
+    dto.setReleasedDate(favorite.getReleasedDate());
+    dto.setMovieDescription(favorite.getMovieDescription());
+    dto.setPublicScore(favorite.getPublicScore());
+    dto.setUserId(favorite.getUser().getUserId());
+    dto.setUsername(favorite.getUser().getUsername());
+    dto.setCreatedAt(favorite.getCreatedAt());
+    
+    if (favorite.getGenreIds() != null) {
+        dto.setGenres(GenreMap.toNames(favorite.getGenreIds()));
     }
+    
+    // DON'T set like data here - it will be enriched later
+    // dto.setCommentLikes(0L);  // Remove this if it exists
+    // dto.setCommentDislikes(0L);  // Remove this if it exists
+    // dto.setUserLikeStatus(null);  // Remove this if it exists
+    
+    return dto;
+}
 
     @PutMapping("/{favoriteId}")
     public ResponseEntity<FavoriteFlat> updateFavorite(@PathVariable Long favoriteId,

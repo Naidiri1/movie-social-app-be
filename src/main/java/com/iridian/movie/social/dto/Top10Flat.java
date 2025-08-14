@@ -7,6 +7,7 @@ import com.iridian.movie.social.model.Top10;
 import com.iridian.movie.social.util.GenreMap;
 
 public class Top10Flat {
+
     private Long id;
     private String userId;
     private String username;
@@ -30,9 +31,9 @@ public class Top10Flat {
     private LocalDateTime createdAt;
 
     public Top10Flat(Long id, String userId, String username,
-                            Long movieId, String title, String posterPath, String comment,
-                            Double userScore, Boolean commentEnabled, String releasedDate, Integer rank,
-                            String movieDescription, Double publicScore, List<String> genres, LocalDateTime createdAt) {
+            Long movieId, String title, String posterPath, String comment,
+            Double userScore, Boolean commentEnabled, String releasedDate, Integer rank,
+            String movieDescription, Double publicScore, List<String> genres, LocalDateTime createdAt) {
         this.id = id;
         this.userId = userId;
         this.username = username;
@@ -59,7 +60,8 @@ public class Top10Flat {
         return dto;
     }
 
-    public Top10Flat() {}
+    public Top10Flat() {
+    }
 
     public Long getId() {
         return id;
@@ -125,7 +127,7 @@ public class Top10Flat {
         this.userScore = userScore;
     }
 
-     public Double getPublicScore() {
+    public Double getPublicScore() {
         return publicScore;
     }
 
@@ -157,10 +159,10 @@ public class Top10Flat {
         this.releasedDate = releasedDate;
     }
 
-     public Integer getRank() {
+    public Integer getRank() {
         return rank;
     }
-    
+
     public void setRank(Integer rank) {
         this.rank = rank;
     }
@@ -169,12 +171,11 @@ public class Top10Flat {
         return movieDescription;
     }
 
-    
     public void setMovieDescription(String movieDescription) {
         this.movieDescription = movieDescription;
     }
 
-     public Long getCommentLikes() {
+    public Long getCommentLikes() {
         return commentLikes;
     }
 
@@ -197,7 +198,7 @@ public class Top10Flat {
     public void setUserLikeStatus(String userLikeStatus) {
         this.userLikeStatus = userLikeStatus;
     }
-    
+
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

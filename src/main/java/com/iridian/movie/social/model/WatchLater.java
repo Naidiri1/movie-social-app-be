@@ -25,7 +25,6 @@ public class WatchLater implements Serializable {
     @Column(name = "watchLater_id")
     private Long watchLaterId;
 
-    // Reference to the user
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
@@ -33,26 +32,26 @@ public class WatchLater implements Serializable {
     @Column(name = "movie_id", nullable = false)
     private Long movieId;
 
-    @Column(name = "title",  nullable = false,  length = 500)
-     private String title;
+    @Column(name = "title", nullable = false, length = 500)
+    private String title;
 
-   @Column(name = "poster_path", length = 500)
+    @Column(name = "poster_path", length = 500)
     private String posterPath;
 
-     @Column(name = "comment")
+    @Column(name = "comment")
     private String comment;
 
     @Column(name = "user_score")
     private Double userScore;
 
-     @Column(name = "comment_enabled")
+    @Column(name = "comment_enabled")
     private Boolean commentEnabled;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(columnDefinition = "jsonb")
     private List<Integer> genreIds = new ArrayList<>();
 
-     @Column(name = "releasedDate")
+    @Column(name = "releasedDate")
     private String releasedDate;
 
     @Column(name = "movie_description", length = 1000)
@@ -116,19 +115,19 @@ public class WatchLater implements Serializable {
         return userScore;
     }
 
-     public void setUserScore(Double userScore) {
+    public void setUserScore(Double userScore) {
         this.userScore = userScore;
     }
 
     public Boolean getCommentEnabled() {
-    return commentEnabled;
+        return commentEnabled;
     }
 
-     public Double getPublicScore() {
+    public Double getPublicScore() {
         return publicScore;
     }
 
-     public void setPublicScore(Double publicScore) {
+    public void setPublicScore(Double publicScore) {
         this.publicScore = publicScore;
     }
 
@@ -148,7 +147,7 @@ public class WatchLater implements Serializable {
         return releasedDate;
     }
 
-     public void setReleasedDate(String releasedDate) {
+    public void setReleasedDate(String releasedDate) {
         this.releasedDate = releasedDate;
     }
 
@@ -156,13 +155,14 @@ public class WatchLater implements Serializable {
         return movieDescription;
     }
 
-     public void setMovieDescription(String movieDescription) {
+    public void setMovieDescription(String movieDescription) {
         this.movieDescription = movieDescription;
     }
 
-     public java.time.LocalDateTime getCreatedAt() {
+    public java.time.LocalDateTime getCreatedAt() {
         return createdAt;
     }
+
     public void setCreatedAt(java.time.LocalDateTime createdAt) {
         this.createdAt = createdAt;
     }

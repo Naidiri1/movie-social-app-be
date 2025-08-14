@@ -28,15 +28,15 @@ public class MovieController {
     public ResponseEntity<?> getPopularMovies(
             @RequestParam(required = false) Integer with_genres,
             @RequestParam(required = false, defaultValue = "1") Integer page) {
-        
+
         String result;
-        
+
         if (with_genres != null) {
             result = tmdbService.getMoviesByGenre(with_genres, page);
         } else {
             result = tmdbService.getPopularMovies(page);
         }
-        
+
         return ResponseEntity.ok(result);
     }
 
@@ -44,15 +44,15 @@ public class MovieController {
     public ResponseEntity<?> getUpcomingMovies(
             @RequestParam(required = false) Integer with_genres,
             @RequestParam(required = false, defaultValue = "1") Integer page) {
-        
+
         String result;
-        
+
         if (with_genres != null) {
             result = tmdbService.getUpcomingMoviesByGenre(with_genres, page);
         } else {
             result = tmdbService.getUpcomingMovies(page);
         }
-        
+
         return ResponseEntity.ok(result);
     }
 

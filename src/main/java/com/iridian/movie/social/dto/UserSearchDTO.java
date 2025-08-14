@@ -1,7 +1,7 @@
 package com.iridian.movie.social.dto;
 
-
 public class UserSearchDTO {
+
     private String userId;
     private String username;
     private long favoritesCount;
@@ -14,8 +14,8 @@ public class UserSearchDTO {
     }
 
     public UserSearchDTO(String userId, String username,
-                        long favoritesCount, long watchedCount,
-                        long top10Count, long watchLaterCount) {
+            long favoritesCount, long watchedCount,
+            long top10Count, long watchLaterCount) {
         this.userId = userId;
         this.username = username;
         this.favoritesCount = favoritesCount;
@@ -40,7 +40,6 @@ public class UserSearchDTO {
     public void setUsername(String username) {
         this.username = username;
     }
-
 
     public long getFavoritesCount() {
         return favoritesCount;
@@ -88,14 +87,14 @@ public class UserSearchDTO {
 
     @Override
     public String toString() {
-        return "UserSearchDTO{" +
-                "userId='" + userId + '\'' +
-                ", username='" + username + '\'' +
-                ", favoritesCount=" + favoritesCount +
-                ", watchedCount=" + watchedCount +
-                ", top10Count=" + top10Count +
-                ", watchLaterCount=" + watchLaterCount +
-                ", totalCount=" + totalCount +
-                '}';
+        return "UserSearchDTO{"
+                + "userId='" + userId + '\''
+                + ", username='" + username + '\''
+                + ", favoritesCount=" + favoritesCount
+                + ", watchedCount=" + watchedCount
+                + ", top10Count=" + top10Count
+                + ", watchLaterCount=" + watchLaterCount
+                + ", totalCount=" + totalCount
+                + '}';
     }
 }

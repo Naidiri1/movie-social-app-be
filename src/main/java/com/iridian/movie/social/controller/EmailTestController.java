@@ -1,4 +1,5 @@
 package com.iridian.movie.social.controller;
+
 import java.util.Map;
 
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,7 +26,8 @@ public class EmailTestController {
         emailTestService.sendTestEmail(to);
         return "✅ Test email sent to " + to;
     }
-      @PostMapping
+
+    @PostMapping
     public String sendEmailPost(@RequestBody Map<String, String> body) {
         String to = body.get("to");
         emailTestService.sendTestEmail(to);

@@ -1,11 +1,10 @@
 package com.iridian.movie.social.dto;
 
 public class SignupRequest {
+
     private String username;
     private String email;
     private String password;
-
-    // Getters and Setters
 
     public String getUsername() {
         return username;
