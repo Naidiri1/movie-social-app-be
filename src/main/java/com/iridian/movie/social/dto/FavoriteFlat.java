@@ -12,6 +12,10 @@ public class FavoriteFlat {
     private String userId;
     private String username;
 
+    private Long commentLikes;
+    private Long commentDislikes;
+    private String userLikeStatus;
+
     private Long movieId;
     private String title;
     private String posterPath;
@@ -42,6 +46,9 @@ public class FavoriteFlat {
         this.publicScore = publicScore;
         this.genres = genres;
         this.createdAt = createdAt;
+        this.commentLikes = 0L;
+        this.commentDislikes = 0L;
+        this.userLikeStatus = null;
     }
 
     public static FavoriteFlat createWithGenres(Favorites entity) {
@@ -50,7 +57,8 @@ public class FavoriteFlat {
         return dto;
     }
 
-    public FavoriteFlat() {}
+    public FavoriteFlat() {
+    }
 
     public Long getId() {
         return id;
@@ -75,7 +83,6 @@ public class FavoriteFlat {
     public void setUsername(String username) {
         this.username = username;
     }
-
 
     public Long getMovieId() {
         return movieId;
@@ -155,6 +162,30 @@ public class FavoriteFlat {
 
     public void setGenres(List<String> genres) {
         this.genres = genres;
+    }
+
+    public Long getCommentLikes() {
+        return commentLikes;
+    }
+
+    public void setCommentLikes(Long commentLikes) {
+        this.commentLikes = commentLikes;
+    }
+
+    public Long getCommentDislikes() {
+        return commentDislikes;
+    }
+
+    public void setCommentDislikes(Long commentDislikes) {
+        this.commentDislikes = commentDislikes;
+    }
+
+    public String getUserLikeStatus() {
+        return userLikeStatus;
+    }
+
+    public void setUserLikeStatus(String userLikeStatus) {
+        this.userLikeStatus = userLikeStatus;
     }
 
     public LocalDateTime getCreatedAt() {

@@ -1,11 +1,13 @@
 package com.iridian.movie.social.model;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
@@ -30,6 +32,18 @@ public class User implements Serializable {
 
     @Column(name = "share_enabled", nullable = false)
     private Boolean shareEnabled = false;
+    
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
+    
+    // Automatically set createdAt when entity is first persisted
+    @PrePersist
+    protected void onCreate() {
+        if (createdAt == null) {
+            createdAt = LocalDateTime.now();
+        }
+    }
+
     // === Getters and Setters ===
 
     public String getUserId() {
@@ -79,5 +93,12 @@ public class User implements Serializable {
     public void setShareEnabled(Boolean shareEnabled) {
         this.shareEnabled = shareEnabled;
     }
+    
+    public LocalDateTime getCreatedAt() {
+        return createdAt;
+    }
 
+    public void setCreatedAt(LocalDateTime createdAt) {
+        this.createdAt = createdAt;
+    }
 }
