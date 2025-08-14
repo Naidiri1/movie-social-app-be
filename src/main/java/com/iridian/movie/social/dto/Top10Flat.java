@@ -11,6 +11,10 @@ public class Top10Flat {
     private String userId;
     private String username;
 
+    private Long commentLikes;
+    private Long commentDislikes;
+    private String userLikeStatus;
+
     private Long movieId;
     private String title;
     private String posterPath;
@@ -44,6 +48,9 @@ public class Top10Flat {
         this.publicScore = publicScore;
         this.genres = genres;
         this.createdAt = createdAt;
+        this.commentLikes = 0L;
+        this.commentDislikes = 0L;
+        this.userLikeStatus = null;
     }
 
     public static Top10Flat createWithGenres(Top10 entity) {
@@ -167,6 +174,30 @@ public class Top10Flat {
         this.movieDescription = movieDescription;
     }
 
+     public Long getCommentLikes() {
+        return commentLikes;
+    }
+
+    public void setCommentLikes(Long commentLikes) {
+        this.commentLikes = commentLikes;
+    }
+
+    public Long getCommentDislikes() {
+        return commentDislikes;
+    }
+
+    public void setCommentDislikes(Long commentDislikes) {
+        this.commentDislikes = commentDislikes;
+    }
+
+    public String getUserLikeStatus() {
+        return userLikeStatus;
+    }
+
+    public void setUserLikeStatus(String userLikeStatus) {
+        this.userLikeStatus = userLikeStatus;
+    }
+    
     public LocalDateTime getCreatedAt() {
         return createdAt;
     }

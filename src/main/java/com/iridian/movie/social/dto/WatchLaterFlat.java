@@ -7,9 +7,14 @@ import com.iridian.movie.social.model.WatchLater;
 import com.iridian.movie.social.util.GenreMap;
 
 public class WatchLaterFlat {
+
     private Long id;
     private String userId;
     private String username;
+
+    private Long commentLikes;
+    private Long commentDislikes;
+    private String userLikeStatus;
 
     private Long movieId;
     private String title;
@@ -24,9 +29,9 @@ public class WatchLaterFlat {
     private LocalDateTime createdAt;
 
     public WatchLaterFlat(Long id, String userId, String username,
-                            Long movieId, String title, String posterPath, String comment,
-                            Double userScore, Boolean commentEnabled, String releasedDate,
-                            String movieDescription, Double publicScore, List<String> genres, LocalDateTime createdAt) {
+            Long movieId, String title, String posterPath, String comment,
+            Double userScore, Boolean commentEnabled, String releasedDate,
+            String movieDescription, Double publicScore, List<String> genres, LocalDateTime createdAt) {
         this.id = id;
         this.userId = userId;
         this.username = username;
@@ -41,6 +46,9 @@ public class WatchLaterFlat {
         this.publicScore = publicScore;
         this.genres = genres;
         this.createdAt = createdAt;
+        this.commentLikes = 0L;
+        this.commentDislikes = 0L;
+        this.userLikeStatus = null;
     }
 
     // Method to create DTO and set genres from entity's genre IDs
@@ -51,7 +59,8 @@ public class WatchLaterFlat {
     }
 
     // Default constructor
-    public WatchLaterFlat() {}
+    public WatchLaterFlat() {
+    }
 
     public Long getId() {
         return id;
@@ -117,7 +126,7 @@ public class WatchLaterFlat {
         this.userScore = userScore;
     }
 
-     public Double getPublicScore() {
+    public Double getPublicScore() {
         return publicScore;
     }
 
@@ -155,6 +164,30 @@ public class WatchLaterFlat {
 
     public void setMovieDescription(String movieDescription) {
         this.movieDescription = movieDescription;
+    }
+
+    public Long getCommentLikes() {
+        return commentLikes;
+    }
+
+    public void setCommentLikes(Long commentLikes) {
+        this.commentLikes = commentLikes;
+    }
+
+    public Long getCommentDislikes() {
+        return commentDislikes;
+    }
+
+    public void setCommentDislikes(Long commentDislikes) {
+        this.commentDislikes = commentDislikes;
+    }
+
+    public String getUserLikeStatus() {
+        return userLikeStatus;
+    }
+
+    public void setUserLikeStatus(String userLikeStatus) {
+        this.userLikeStatus = userLikeStatus;
     }
 
     public LocalDateTime getCreatedAt() {
