@@ -14,8 +14,10 @@ public class CorsConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(
-                                "https://movie-social-app-fe.vercel.app", 
+                          .allowedOrigins(
+                                "https://movie-social-app-fe.vercel.app",
+                                "https://movie-social-app-fe-9g8c-drg74gc1e-naidiri1s-projects.vercel.app",
+                                "https://movie-social-app-fe-*.vercel.app", 
                                 "http://localhost:3000"
                         ).allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*").
