@@ -1,8 +1,6 @@
 package com.iridian.movie.social.config;
 
 import java.util.Arrays;
-import java.util.List;
-
 import javax.crypto.SecretKey;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -26,23 +24,25 @@ import io.jsonwebtoken.security.Keys;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    @Value("${app.cors.allowed-origins:http://localhost:3000}")
-    private String allowedOriginsProp;
-
     @Bean
     SecurityFilterChain security(HttpSecurity http) throws Exception {
         return http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
-                .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
-                .requestMatchers(HttpMethod.GET, "/api/share/**").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/auth/forgot-password").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/auth/reset-password").permitAll()
-                .requestMatchers("/api/test-email/**").permitAll()
-                .anyRequest().authenticated()
+                    // Allow all OPTIONS requests (CORS preflight)
+                    .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
+                    
+                    .requestMatchers(HttpMethod.POST, "/api/auth/login").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/auth/signup").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/auth/forgot-password").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/api/auth/reset-password").permitAll()
+                    
+                    .requestMatchers(HttpMethod.GET, "/api/share/**").permitAll()
+                    
+                    .requestMatchers("/api/test-email/**").permitAll()
+                    
+                    .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
@@ -51,15 +51,23 @@ public class SecurityConfig {
 
     @Bean
     CorsConfigurationSource corsConfigurationSource() {
-        List<String> allowedOrigins = Arrays.stream(allowedOriginsProp.split(","))
-                .map(String::trim).toList();
-
         CorsConfiguration cfg = new CorsConfiguration();
-        cfg.setAllowedOrigins(allowedOrigins);
+        
+        // Allow ALL Vercel deployment URLs and localhost
+        cfg.setAllowedOriginPatterns(Arrays.asList(
+            "https://*.vercel.app",    
+            "http://localhost:3000",   
+            "http://localhost:3001"     
+        ));
+        
         cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
-        cfg.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept", "X-Requested-With"));
+        
+        cfg.setAllowedHeaders(Arrays.asList("*"));
+        
         cfg.setExposedHeaders(Arrays.asList("Location"));
+        
         cfg.setAllowCredentials(true);
+        
         cfg.setMaxAge(3600L);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
