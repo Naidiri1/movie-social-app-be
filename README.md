@@ -139,16 +139,6 @@ Users can organize movies into:
 - Environment configuration
 - Version control with Git
 
-## 📈 Learning Journey
-
-Through this project, I:
-- **Learned** Spring Boot framework from documentation
-- **Implemented** JWT authentication for the first time
-- **Designed** a complex relational database
-- **Deployed** to production cloud environment
-- **Integrated** with external APIs
-- **Solved** real-world backend challenges
-
 ## 💻 Running the Project Locally
 
 ### Prerequisites
@@ -184,8 +174,7 @@ This backend demonstrates my ability to:
 
 - **[Frontend Code](https://github.com/Naidiri1/movie-social-app-fe)** - React frontend
 - **[Live Demo](https://movie-social-app-fe-57kb.vercel.app/login)** - Try it out!
-- **[Video Walkthrough](https://youtu.be/duTqdjZNbug)** - 3-minute demo
-
+- **[Video Walkthrough](https://youtu.be/duTqdjZNbug)** a walk through video
 ---
 
 *Built with passion and a great way to keep pushing my self to new challenges and leaning on the process enjoying it too*
