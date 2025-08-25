@@ -69,6 +69,34 @@ Users can organize movies into:
 - Reorder movies with position tracking
 - Maintain order consistency in database
 - Add comments to each ranked movie
+## 🔐 Password Reset (Email Link Flow)
+
+Iriscope supports a secure, single-use, time-limited password reset via email.
+
+### How it works
+1. **Request** — User submits their email on **Forgot Password** (`/forgot-password`).
+2. **Token issued** — Backend creates a **random token**, stores only its **SHA-256 hash** with a **30-minute expiry**, and sends the raw token in a link to the user’s email.
+3. **Reset** — User clicks the link (e.g., `/reset-password?token=...`), enters a new password, and submits.
+4. **Verify & rotate** — Backend validates the token (hash match, not expired, not used), **BCrypt-hashes** the new password, **marks token as used**, and (optionally) invalidates other active sessions.
+
+### Endpoints
+| Method | Path                      | Body (JSON)                         | Notes |
+|-------:|---------------------------|-------------------------------------|------|
+| POST   | `/auth/forgot-password`   | `{ "email": "user@example.com" }`   | Always returns **200** (no email enumeration). |
+| POST   | `/auth/reset-password`    | `{ "token": "<raw>", "newPassword": "..." }` | **400** if token invalid/expired/used; **200** on success. |
+
+
+### Frontend UX
+- **Pages:** `/forgot-password` (request link), `/reset-password?token=...` (set new password).
+- **Behavior:** No indication whether an email exists; friendly success message either way.
+- **Validation:** Minimum password length; confirm-password check; redirect to `/login` on success.
+
+### Security Measures
+- **Single-use tokens** with **expiry** (e.g., 60 minutes).
+- Store **token hashes** only; send the **raw token** in the URL.
+- **BCrypt** for user passwords.
+- **CORS** limited to the frontend origin; strict methods/headers.
+- Optional: rate-limit `/auth/forgot-password`, log attempts, and revoke other sessions after reset.
 
 ## 📸 Project Structure
 
