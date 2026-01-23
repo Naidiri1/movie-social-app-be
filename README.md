@@ -1,6 +1,6 @@
 # 🚀 Iriscope Backend - Movie Social Platform 
 
-**[🔴 Live Production API](https://your-railway-url.up.railway.app)** | **[⚛️ Frontend Repository](https://github.com/Naidiri1/movie-social-app-fe)** | **[🎬 Live Demo](https://movie-social-app-fe-57kb.vercel.app/login)**
+**[🔴 Live Production API]([https://your-railway-url.up.railway.app](https://iriscopemovies.com/login/))** | **[⚛️ Frontend Repository](https://github.com/Naidiri1/movie-social-app-fe)** | **[🎬 Live Demo](https://iriscopemovies.com/login/)**
 
 ## 🎯 Why This Project Matters
 
@@ -20,7 +20,7 @@ I built Iriscope's backend as a RESTful API that powers a social movie platform 
 - **Secure user authentication** using JWT tokens
 - **Database design** with 10+ related tables
 - **TMDB API integration** for real-time movie data
-- **Successfully deployed** to production on Railway
+- **Successfully deployed** to production on AWS
 
 ### Technical Implementation
 - Built with **Spring Boot** and **Java**
@@ -32,9 +32,11 @@ I built Iriscope's backend as a RESTful API that powers a social movie platform 
 - **Spring Boot** - Java framework for building the API
 - **PostgreSQL** - Relational database
 - **JWT** - Token-based authentication
-- **Railway** - Cloud deployment platform
+- **AWS EC2** -backend compute (Spring Boot JAR)
+- **AWS RDS PostgreSQL** -managed database
 - **TMDB API** - External movie data source
-
+- **Security Groups** — firewall rules
+  
 ## 🌟 Core Features Implemented
 
 ### 🎬 Movie Management
@@ -109,10 +111,10 @@ Iriscope supports a secure, single-use, time-limited password reset via email.
 
 <img width="1822" height="711" alt="Screenshot 2025-08-20 012503" src="https://github.com/user-attachments/assets/461409ec-c935-4ac6-a4ae-edbb54c71385" />
 
-*Live deployment on Railway with PostgreSQL database*
+*Live deployment on AWS with PostgreSQL database*
 
-### Deployment Features
-- Deployed successfully to Railway cloud
+### Deployment Features (AWS)
+- Deployed successfully to Spring Boot as a packaged JAR
 - Connected PostgreSQL database
 - Environment variables for sensitive data
 - Automatic deploys from GitHub
