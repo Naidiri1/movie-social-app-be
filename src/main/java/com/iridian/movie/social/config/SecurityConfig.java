@@ -42,6 +42,9 @@ public class SecurityConfig {
                     
                     .requestMatchers("/api/test-email/**").permitAll()
                     
+                    // Health check for load balancer
+                    .requestMatchers("/actuator/**").permitAll()
+                    
                     .anyRequest().authenticated()
                 )
                 .oauth2ResourceServer(oauth2 -> oauth2.jwt(Customizer.withDefaults()))
@@ -55,9 +58,15 @@ public class SecurityConfig {
         
         // Allow ALL Vercel deployment URLs and localhost
         cfg.setAllowedOriginPatterns(Arrays.asList(
-            "https://*.vercel.app",    
-            "http://localhost:3000",   
-            "http://localhost:3001"     
+            "https://iriscopemovies.com",             // Production domain
+            "https://www.iriscopemovies.com",         // Production www
+            "https://d1da7w56d5knq3.cloudfront.net",  // CloudFront HTTPS
+            "http://d1da7w56d5knq3.cloudfront.net",   // CloudFront HTTP
+            "https://*.vercel.app",      // Keep if still using Vercel
+            "http://localhost:*",        // All localhost ports
+            "http://127.0.0.1:*",        // IPv4 loopback
+            "http://[::1]:*",            // IPv6 loopback
+            "http://34.224.27.147:*"     // EC2 instance
         ));
         
         cfg.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"));
